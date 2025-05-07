@@ -6,7 +6,7 @@ import Navbar from "../../src/components/shared/Navbar"
 function index() {
   return (
     <>
-    <Navbar></Navbar>
+    <Navbar />
     <Routes>
       <Route path="/login" element={<Login />} />
     </Routes>
