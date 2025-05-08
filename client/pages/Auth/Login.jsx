@@ -1,7 +1,10 @@
+import LoginForm from "../../src/components/shared/LoginForm"
 
 function Login() {
   return (
-    <div>Login</div>
+    <>
+      <LoginForm />
+    </>
   )
 }
 

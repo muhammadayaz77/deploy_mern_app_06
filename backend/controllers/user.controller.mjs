@@ -1,217 +1,721 @@
-import userModel from '../models/userModel.mjs';
-import bcrypt from 'bcrypt'
-import jwt from 'jsonwebtoken'
-import { sendVerficationCode } from '../config/Email.mjs';
-import EmailVerificationModel from '../models/EmailVerification.mjs';
-
-import RefreshToken from '../models/RefreshTokenModel.mjs';
+import UserModel from "../models/userModel.mjs";
 
 
 
-// Verify Email
-
-export const verifyEmail = async(req,res) => {
+export const login = async(req,res) => {
   try {
-    const {email,otp} = req.body;
-    if(!email || !otp)
-    {
-      return res.status(400).json({
-        message : 'Required all fields',
-        success : false
-      })
-    }
-    const existingUser = await userModel.findOne({email})
-
-    if(existingUser.is_verified)
-    {
-      return res.status(400).json({
-        message : 'User is already verified',
-        success : false
-      })
-    }
-
-    const emailVerification = await EmailVerificationModel.findOne({userId : existingUser._id,otp})
-
-    if(!emailVerification){
-      if(!existingUser.is_verified){
-        await sendVerficationCode(req,existingUser)
-
-        return res.status(400).json({
-          message : 'Invalid OTP, new OTP sent to your email.',
-          success : false
-        })
+    // let {email,password} = req.body;
+    // console.log(email,password)
+    const students = [
+      {
+        name: "Ahmed Khan",
+        email: "bscs-221001",
+        password: "icp@Student.123",
+        phone: 923001234567,
+        role: "student"
+      },
+      {
+        name: "Fatima Ali",
+        email: "bsse-221002",
+        password: "icp@Student.123",
+        phone: 923001234568,
+        role: "student"
+      },
+      {
+        name: "Muhammad Hassan",
+        email: "bsai-221003",
+        password: "icp@Student.123",
+        phone: 923001234569,
+        role: "student"
+      },
+      {
+        name: "Ayesha Raza",
+        email: "bscs-221004",
+        password: "icp@Student.123",
+        phone: 923001234570,
+        role: "student"
+      },
+      {
+        name: "Bilal Ahmed",
+        email: "bsse-221005",
+        password: "icp@Student.123",
+        phone: 923001234571,
+        role: "student"
+      },
+      {
+        name: "Sara Malik",
+        email: "bsai-221006",
+        password: "icp@Student.123",
+        phone: 923001234572,
+        role: "student"
+      },
+      {
+        name: "Usman Shah",
+        email: "bscs-221007",
+        password: "icp@Student.123",
+        phone: 923001234573,
+        role: "student"
+      },
+      {
+        name: "Zainab Akhtar",
+        email: "bsse-221008",
+        password: "icp@Student.123",
+        phone: 923001234574,
+        role: "student"
+      },
+      {
+        name: "Ali Raza",
+        email: "bsai-221009",
+        password: "icp@Student.123",
+        phone: 923001234575,
+        role: "student"
+      },
+      {
+        name: "Hina Khan",
+        email: "bscs-221010",
+        password: "icp@Student.123",
+        phone: 923001234576,
+        role: "student"
+      },
+      // Continuing with unique email patterns...
+      {
+        name: "Omar Farooq",
+        email: "bsse-221011",
+        password: "icp@Student.123",
+        phone: 923001234577,
+        role: "student"
+      },
+      {
+        name: "Aisha Mahmood",
+        email: "bsai-221012",
+        password: "icp@Student.123",
+        phone: 923001234578,
+        role: "student"
+      },
+      {
+        name: "Kamran Ali",
+        email: "bscs-221013",
+        password: "icp@Student.123",
+        phone: 923001234579,
+        role: "student"
+      },
+      {
+        name: "Nadia Hussain",
+        email: "bsse-221014",
+        password: "icp@Student.123",
+        phone: 923001234580,
+        role: "student"
+      },
+      {
+        name: "Faisal Iqbal",
+        email: "bsai-221015",
+        password: "icp@Student.123",
+        phone: 923001234581,
+        role: "student"
+,      },
+      {
+        name: "Mehak Saleem",
+        email: "bscs-221016",
+        password: "icp@Student.123",
+        phone: 923001234582,
+        role: "student"
+      },
+      {
+        name: "Tariq Mahmood",
+        email: "bsse-221017",
+        password: "icp@Student.123",
+        phone: 923001234583,
+        role: "student"
+      },
+      {
+        name: "Sadia Khan",
+        email: "bsai-221018",
+        password: "icp@Student.123",
+        phone: 923001234584,
+        role: "student"
+      },
+      {
+        name: "Imran Ashraf",
+        email: "bscs-221019",
+        password: "icp@Student.123",
+        phone: 923001234585,
+        role: "student"
+      },
+      {
+        name: "Rabia Akram",
+        email: "bsse-221020",
+        password: "icp@Student.123",
+        phone: 923001234586,
+        role: "student"
+      },
+      {
+        name: "Asad Ullah",
+        email: "bsai-221021",
+        password: "icp@Student.123",
+        phone: 923001234587,
+        role: "student"
+      },
+      {
+        name: "Sana Mirza",
+        email: "bscs-221022",
+        password: "icp@Student.123",
+        phone: 923001234588,
+        role: "student"
+      },
+      {
+        name: "Haris Malik",
+        email: "bsse-221023",
+        password: "icp@Student.123",
+        phone: 923001234589,
+        role: "student"
+      },
+      {
+        name: "Zara Sheikh",
+        email: "bsai-221024",
+        password: "icp@Student.123",
+        phone: 923001234590,
+        role: "student"
+      },
+      {
+        name: "Waqas Ahmed",
+        email: "bscs-221025",
+        password: "icp@Student.123",
+        phone: 923001234591,
+        role: "student"
+      },
+      {
+        name: "Amina Khan",
+        email: "bsse-221026",
+        password: "icp@Student.123",
+        phone: 923001234592,
+        role: "student"
+      },
+      {
+        name: "Saad Abdullah",
+        email: "bsai-221027",
+        password: "icp@Student.123",
+        phone: 923001234593,
+        role: "student"
+      },
+      {
+        name: "Farah Naz",
+        email: "bscs-221028",
+        password: "icp@Student.123",
+        phone: 923001234594,
+        role: "student"
+      },
+      {
+        name: "Nasir Khan",
+        email: "bsse-221029",
+        password: "icp@Student.123",
+        phone: 923001234595,
+        role: "student"
+      },
+      {
+        name: "Saima Iqbal",
+        email: "bsai-221030",
+        password: "icp@Student.123",
+        phone: 923001234596,
+        role: "student"
+      },
+      {
+        name: "Junaid Akbar",
+        email: "bscs-221031",
+        password: "icp@Student.123",
+        phone: 923001234597,
+        role: "student"
+      },
+      {
+        name: "Hira Shah",
+        email: "bsse-221032",
+        password: "icp@Student.123",
+        phone: 923001234598,
+        role: "student"
+      },
+      {
+        name: "Fahad Mustafa",
+        email: "bsai-221033",
+        password: "icp@Student.123",
+        phone: 923001234599,
+        role: "student"
+      },
+      {
+        name: "Mariam Khan",
+        email: "bscs-221034",
+        password: "icp@Student.123",
+        phone: 923001234600,
+        role: "student"
+      },
+      {
+        name: "Arslan Malik",
+        email: "bsse-221035",
+        password: "icp@Student.123",
+        phone: 923001234601,
+        role: "student"
+      },
+      {
+        name: "Nida Ali",
+        email: "bsai-221036",
+        password: "icp@Student.123",
+        phone: 923001234602,
+        role: "student"
+      },
+      {
+        name: "Shahid Afridi",
+        email: "bscs-221037",
+        password: "icp@Student.123",
+        phone: 923001234603,
+        role: "student"
+      },
+      {
+        name: "Saba Qamar",
+        email: "bsse-221038",
+        password: "icp@Student.123",
+        phone: 923001234604,
+        role: "student"
+      },
+      {
+        name: "Babar Azam",
+        email: "bsai-221039",
+        password: "icp@Student.123",
+        phone: 923001234605,
+        role: "student"
+      },
+      {
+        name: "Ayesha Omar",
+        email: "bscs-221040",
+        password: "icp@Student.123",
+        phone: 923001234606,
+        role: "student"
+      },
+      {
+        name: "Hamza Ali",
+        email: "bsse-221041",
+        password: "icp@Student.123",
+        phone: 923001234607,
+        role: "student"
+      },
+      {
+        name: "Zoya Malik",
+        email: "bsai-221042",
+        password: "icp@Student.123",
+        phone: 923001234608,
+        role: "student"
+      },
+      {
+        name: "Saifullah Khan",
+        email: "bscs-221043",
+        password: "icp@Student.123",
+        phone: 923001234609,
+        role: "student"
+      },
+      {
+        name: "Aiman Khan",
+        email: "bsse-221044",
+        password: "icp@Student.123",
+        phone: 923001234610,
+        role: "student"
+      },
+      {
+        name: "Rizwan Ahmed",
+        email: "bsai-221045",
+        password: "icp@Student.123",
+        phone: 923001234611,
+        role: "student"
+      },
+      {
+        name: "Sana Safdar",
+        email: "bscs-221046",
+        password: "icp@Student.123",
+        phone: 923001234612,
+        role: "student"
+      },
+      {
+        name: "Adnan Sami",
+        email: "bsse-221047",
+        password: "icp@Student.123",
+        phone: 923001234613,
+        role: "student"
+      },
+      {
+        name: "Mehwish Hayat",
+        email: "bsai-221048",
+        password: "icp@Student.123",
+        phone: 923001234614,
+        role: "student"
+      },
+      {
+        name: "Shahzad Roy",
+        email: "bscs-221049",
+        password: "icp@Student.123",
+        phone: 923001234615,
+        role: "student"
+      },
+      {
+        name: "Anum Tanveer",
+        email: "bsse-221050",
+        password: "icp@Student.123",
+        phone: 923001234616,
+        role: "student"
+      },
+      {
+        name: "Noman Ali",
+        email: "bsai-221051",
+        password: "icp@Student.123",
+        phone: 923001234617,
+        role: "student"
+      },
+      {
+        name: "Kiran Khan",
+        email: "bscs-221052",
+        password: "icp@Student.123",
+        phone: 923001234618,
+        role: "student"
+      },
+      {
+        name: "Waleed Akhtar",
+        email: "bsse-221053",
+        password: "icp@Student.123",
+        phone: 923001234619,
+        role: "student"
+      },
+      {
+        name: "Sadia Ghaffar",
+        email: "bsai-221054",
+        password: "icp@Student.123",
+        phone: 923001234620,
+        role: "student"
+      },
+      {
+        name: "Faisal Khan",
+        email: "bscs-221055",
+        password: "icp@Student.123",
+        phone: 923001234621,
+        role: "student"
+      },
+      {
+        name: "Huma Qureshi",
+        email: "bsse-221056",
+        password: "icp@Student.123",
+        phone: 923001234622,
+        role: "student"
+      },
+      {
+        name: "Salman Ahmed",
+        email: "bsai-221057",
+        password: "icp@Student.123",
+        phone: 923001234623,
+        role: "student"
+      },
+      {
+        name: "Areeba Malik",
+        email: "bscs-221058",
+        password: "icp@Student.123",
+        phone: 923001234624,
+        role: "student"
+      },
+      {
+        name: "Tahir Hussain",
+        email: "bsse-221059",
+        password: "icp@Student.123",
+        phone: 923001234625,
+        role: "student"
+      },
+      {
+        name: "Nadia Khan",
+        email: "bsai-221060",
+        password: "icp@Student.123",
+        phone: 923001234626,
+        role: "student"
+      },
+      {
+        name: "Asim Azhar",
+        email: "bscs-221061",
+        password: "icp@Student.123",
+        phone: 923001234627,
+        role: "student"
+      },
+      {
+        name: "Sara Riaz",
+        email: "bsse-221062",
+        password: "icp@Student.123",
+        phone: 923001234628,
+        role: "student"
+      },
+      {
+        name: "Zeeshan Khan",
+        email: "bsai-221063",
+        password: "icp@Student.123",
+        phone: 923001234629,
+        role: "student"
+      },
+      {
+        name: "Ayesha Siddiqui",
+        email: "bscs-221064",
+        password: "icp@Student.123",
+        phone: 923001234630,
+        role: "student"
+      },
+      {
+        name: "Ali Abbas",
+        email: "bsse-221065",
+        password: "icp@Student.123",
+        phone: 923001234631,
+        role: "student"
+      },
+      {
+        name: "Mahnoor Shah",
+        email: "bsai-221066",
+        password: "icp@Student.123",
+        phone: 923001234632,
+        role: "student"
+      },
+      {
+        name: "Shayan Ahmed",
+        email: "bscs-221067",
+        password: "icp@Student.123",
+        phone: 923001234633,
+        role: "student"
+      },
+      {
+        name: "Zainab Khan",
+        email: "bsse-221068",
+        password: "icp@Student.123",
+        phone: 923001234634,
+        role: "student"
+      },
+      {
+        name: "Saad Malik",
+        email: "bsai-221069",
+        password: "icp@Student.123",
+        phone: 923001234635,
+        role: "student"
+      },
+      {
+        name: "Hina Aslam",
+        email: "bscs-221070",
+        password: "icp@Student.123",
+        phone: 923001234636,
+        role: "student"
+      },
+      {
+        name: "Farhan Ali",
+        email: "bsse-221071",
+        password: "icp@Student.123",
+        phone: 923001234637,
+        role: "student"
+      },
+      {
+        name: "Amina Sheikh",
+        email: "bsai-221072",
+        password: "icp@Student.123",
+        phone: 923001234638,
+        role: "student"
+      },
+      {
+        name: "Usama Khan",
+        email: "bscs-221073",
+        password: "icp@Student.123",
+        phone: 923001234639,
+        role: "student"
+      },
+      {
+        name: "Sadia Malik",
+        email: "bsse-221074",
+        password: "icp@Student.123",
+        phone: 923001234640,
+        role: "student"
+      },
+      {
+        name: "Imran Khan",
+        email: "bsai-221075",
+        password: "icp@Student.123",
+        phone: 923001234641,
+        role: "student"
+      },
+      {
+        name: "Saba Faisal",
+        email: "bscs-221076",
+        password: "icp@Student.123",
+        phone: 923001234642,
+        role: "student"
+      },
+      {
+        name: "Ahsan Ali",
+        email: "bsse-221077",
+        password: "icp@Student.123",
+        phone: 923001234643,
+        role: "student"
+      },
+      {
+        name: "Maryam Khan",
+        email: "bsai-221078",
+        password: "icp@Student.123",
+        phone: 923001234644,
+        role: "student"
+      },
+      {
+        name: "Shahid Khan",
+        email: "bscs-221079",
+        password: "icp@Student.123",
+        phone: 923001234645,
+        role: "student"
+      },
+      {
+        name: "Ayesha Akhtar",
+        email: "bsse-221080",
+        password: "icp@Student.123",
+        phone: 923001234646,
+        role: "student"
+      },
+      {
+        name: "Hamza Malik",
+        email: "bsai-221081",
+        password: "icp@Student.123",
+        phone: 923001234647,
+        role: "student"
+      },
+      {
+        name: "Sanaullah Khan",
+        email: "bscs-221082",
+        password: "icp@Student.123",
+        phone: 923001234648,
+        role: "student"
+      },
+      {
+        name: "Aiman Malik",
+        email: "bsse-221083",
+        password: "icp@Student.123",
+        phone: 923001234649,
+        role: "student"
+      },
+      {
+        name: "Raza Ahmed",
+        email: "bsai-221084",
+        password: "icp@Student.123",
+        phone: 923001234650,
+        role: "student"
+      },
+      {
+        name: "Sadia Faisal",
+        email: "bscs-221085",
+        password: "icp@Student.123",
+        phone: 923001234651,
+        role: "student"
+      },
+      {
+        name: "Adil Sami",
+        email: "bsse-221086",
+        password: "icp@Student.123",
+        phone: 923001234652,
+        role: "student"
+      },
+      {
+        name: "Mehwish Malik",
+        email: "bsai-221087",
+        password: "icp@Student.123",
+        phone: 923001234653,
+        role: "student"
+      },
+      {
+        name: "Shahzad Khan",
+        email: "bscs-221088",
+        password: "icp@Student.123",
+        phone: 923001234654,
+        role: "student"
+      },
+      {
+        name: "Anum Khan",
+        email: "bsse-221089",
+        password: "icp@Student.123",
+        phone: 923001234655,
+        role: "student"
+      },
+      {
+        name: "Noman Khan",
+        email: "bsai-221090",
+        password: "icp@Student.123",
+        phone: 923001234656,
+        role: "student"
+      },
+      {
+        name: "Kiran Malik",
+        email: "bscs-221091",
+        password: "icp@Student.123",
+        phone: 923001234657,
+        role: "student"
+      },
+      {
+        name: "Waleed Khan",
+        email: "bsse-221092",
+        password: "icp@Student.123",
+        phone: 923001234658,
+        role: "student"
+      },
+      {
+        name: "Sadia Khan",
+        email: "bsai-221093",
+        password: "icp@Student.123",
+        phone: 923001234659,
+        role: "student"
+      },
+      {
+        name: "Faisal Malik",
+        email: "bscs-221094",
+        password: "icp@Student.123",
+        phone: 923001234660,
+        role: "student"
+      },
+      {
+        name: "Huma Khan",
+        email: "bsse-221095",
+        password: "icp@Student.123",
+        phone: 923001234661,
+        role: "student"
+      },
+      {
+        name: "Salman Khan",
+        email: "bsai-221096",
+        password: "icp@Student.123",
+        phone: 923001234662,
+        role: "student"
+      },
+      {
+        name: "Areeba Khan",
+        email: "bscs-221097",
+        password: "icp@Student.123",
+        phone: 923001234663,
+        role: "student"
+      },
+      {
+        name: "Tahir Khan",
+        email: "bsse-221098",
+        password: "icp@Student.123",
+        phone: 923001234664,
+        role: "student"
+      },
+      {
+        name: "Nadia Malik",
+        email: "bsai-221099",
+        password: "icp@Student.123",
+        phone: 923001234665,
+        role: "student"
+      },
+      {
+        name: "Asim Khan",
+        email: "bscs-221100",
+        password: "icp@Student.123",
+        phone: 923001234666,
+        role: "student"
       }
-      return res.status(400).json({
-        message : 'Invalid OTP ',
-        success : false
-      })
-    }
-
-
-    const currentTime = new Date();
-
-    const expirationTime = new Date(emailVerification.createdAt.getTime() + 15 * 60 * 1000)
-
-    if(currentTime > expirationTime){
-      await sendVerficationCode(req,existingUser)
-      return res.status(400).json({
-        message : 'Invalid OTP, new OTP sent to your email.',
-        success : false
-      })
-    } 
+    ];
+    await UserModel.insertMany(students,{ordered : false});
     
-    existingUser.is_verified = true;
-    await existingUser.save();  
-
-    // deleting email verification documents
-    await EmailVerificationModel.deleteMany({userId : existingUser._id})
-    return res.status(200).json({
-      message : 'Email Verified Successfully!',
-      success : true
-    })
+    return res.send("Success")
+    // To insert into MongoDB, you can use:
+    // db.students.insertMany(students);
   } catch (error) {
-    res.status(500).json({
-      message : error.message,
-      success : false
-    })
-  }
-}
-
-
-
-export const login = async (req, res) => {
-  try {
-    let { email, password } = req.body;
-
-    if (!email || !password) {
-      return res.status(400).json({
-        message: "Require all fields",
-        success: false
-      });
-    }
-
-    let user = await userModel.findOne({ email });
-
-    if (!user) {
-      return res.status(400).json({
-        message: "User not found",
-        success: false
-      });
-    }
-
-    if (!user.is_verified) {
-      return res.status(400).json({
-        message: 'Your account is not verified',
-        success: false
-      });
-    }
-
-    let is_match = await bcrypt.compare(password, user.password);
-
-    if (!is_match) {
-      return res.status(400).json({
-        message: 'Invalid Credentials!!!',
-        success: false
-      });
-    }
-
-    // Define Expiry Times
-const ACCESS_TOKEN_EXPIRY = 24 * 60 * 60 * 1000; // 1 day in milliseconds
-const REFRESH_TOKEN_EXPIRY = 7 * 24 * 60 * 60 * 1000; // 7 days in milliseconds
-
-// Generate Tokens
-const accessToken = jwt.sign(
-  { id: user._id, email: user.email },
-  process.env.ACCESS_TOKEN_SECRET,
-  { expiresIn: '1d' }
-);
-
-const refreshToken = jwt.sign(
-  { id: user._id, email: user.email },
-  process.env.REFRESH_TOKEN_SECRET,
-  { expiresIn: '7d' }
-);
-
-// Set Cookies
-res.cookie('accessToken', accessToken, {
-  httpOnly: true,
-  secure: process.env.NODE_ENV === 'production',
-  sameSite: 'Strict',
-  maxAge: ACCESS_TOKEN_EXPIRY
-});
-
-res.cookie('refreshToken', refreshToken, {
-  httpOnly: true,
-  secure: process.env.NODE_ENV === 'production',
-  sameSite: 'Strict',
-  maxAge: REFRESH_TOKEN_EXPIRY
-});
-
-// Store Refresh Token in Database
-await RefreshToken.create({
-  token: refreshToken,
-  userId: user._id,
-  expiresAt: new Date(Date.now() + REFRESH_TOKEN_EXPIRY) // 7 days expiry
-});
-
-
-    // Send Success Response with Tokens
-    return res.status(200).json({
-      message: 'Login successful',
-      success: true,
-      accessToken,
-      refreshToken
-    });
-
-  } catch (error) {
-    return res.status(500).json({
-      message: error.message,
-      success: false
-    });
-  }
-};
-
-
-
-export const refreshToken = async (req, res) => {
-  const token = req.cookies.refreshToken;
-  if (!token) return res.status(403).json({ message: 'Refresh token required' });
-
-  const storedToken = await RefreshToken.findOne({ token });
-  if (!storedToken) return res.status(403).json({ message: 'Invalid refresh token' });
-
-  jwt.verify(token, process.env.REFRESH_TOKEN_SECRET, async (err, user) => {
-    if (err) return res.status(403).json({ message: 'Invalid token' });
-
-    const newAccessToken = jwt.sign({ id: user.id, email: user.email }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '15m' });
-
-    res.json({ accessToken: newAccessToken });
-  });
-};
-
-
-
-export const logout = async (req, res) => {
-  res.clearCookie('accessToken');
-  res.clearCookie('refreshToken');
-  
-  await RefreshToken.deleteOne({ token: req.cookies.refreshToken });
-
-  return res.status(200).json({ message: 'Logged out successfully' });
-};
-
-
-export const updateProfile = async(req,res) => {
-  try {
-    let userId = req.userId;
-    let user = await userModel.findByIdAndUpdate(userId,req.body,{new:true});
-    return res.status(200).json({
-      user,
-      message : 'Profile Updated successfully!!!',
-      success : true
-    })
-  } catch (error) {
-    return res.status(404).json({
+    return res.json({
       message : error.message,
       success : false
     })
