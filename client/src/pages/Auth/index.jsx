@@ -1,7 +1,7 @@
 import { Route, Routes } from "react-router-dom"
 import Login from "./Login"
-import Navbar from "../../src/components/shared/Navbar"
-import Footer from "../../src/components/shared/Footer"
+import Navbar from "../../components/shared/Navbar"
+import Footer from "../../components/shared/Footer"
 
 
 function index() {

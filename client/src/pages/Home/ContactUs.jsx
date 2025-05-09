@@ -1,4 +1,4 @@
-import ContactUsForm from "../../src/components/shared/ContactUsForm"
+import ContactUsForm from "../../components/shared/ContactUsForm"
 
 function ContactUs() {
   return (

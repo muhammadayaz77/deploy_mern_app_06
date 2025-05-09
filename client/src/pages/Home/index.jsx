@@ -1,8 +1,8 @@
 import React from 'react'
 import { Route, Routes } from 'react-router-dom'
 import ContactUs from './ContactUs'
-import Navbar from '../../src/components/shared/Navbar'
-import Footer from '../../src/components/shared/Footer'
+import Navbar from '../../components/shared/Navbar'
+import Footer from '../../components/shared/Footer'
 
 function Index() {
   return (

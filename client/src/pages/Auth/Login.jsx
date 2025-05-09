@@ -1,4 +1,4 @@
-import LoginForm from "../../src/components/shared/LoginForm"
+import LoginForm from "../../components/shared/LoginForm"
 
 function Login() {
   return (

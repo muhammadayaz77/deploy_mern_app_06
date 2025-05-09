@@ -112,7 +112,7 @@ export const login = async(req,res) => {
         password: "icp@Student.123",
         phone: 923001234581,
         role: "student"
-,      },
+      },
       {
         name: "Mehak Saleem",
         email: "bscs-221016",
@@ -709,9 +709,23 @@ export const login = async(req,res) => {
         role: "student"
       }
     ];
-    await UserModel.insertMany(students,{ordered : false});
-    
-    return res.send("Success")
+  
+
+    const emails = students.map((s) => s.email);
+const existing = await UserModel.find({ email: { $in: emails } }).select("email");
+
+const existingEmails = existing.map((e) => e.email);
+
+const uniqueStudents = students.filter(
+  (s) => !existingEmails.includes(s.email)
+);
+
+if (uniqueStudents.length > 0) {
+  const result = await UserModel.insertMany(uniqueStudents);
+  res.status(200).json({ message: "Inserted non-duplicate students", result });
+} else {
+  res.status(200).json({ message: "No new students to insert" });
+}
     // To insert into MongoDB, you can use:
     // db.students.insertMany(students);
   } catch (error) {

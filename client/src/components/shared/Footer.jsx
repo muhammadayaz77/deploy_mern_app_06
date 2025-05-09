@@ -1,7 +1,7 @@
 
 function Footer() {
   return (
-    <div className=" bg-[#2E1414] text-white pt-10 pb-5 mt-14">
+    <div className=" bg-[#2E1414] text-white pt-10 pb-5 mt-14 w-full">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
       <div className="mb-8">
