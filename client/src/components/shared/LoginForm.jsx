@@ -11,7 +11,6 @@ function LoginForm() {
 
   const onSubmit = async(data) => {
     // Here, send the data to backend API using fetch/axios
-    try {
       setLoading(true);
       await axios.post(AUTH_API_ENDPOINT,data)
       .then(res => {
@@ -23,13 +22,9 @@ function LoginForm() {
         window.toastify(err?.response.data.message || 'Log in failed!','error')
 
       })
-    } catch (error) {
-      console.log(error)
-      window.toastify(error?.message || 'Log in failed!','error')
-
-    } finally {
-    setLoading(fasle);
-    }
+      .finally(() => {
+        setLoading(false)
+      })
   };
 
   return (
@@ -67,10 +62,15 @@ function LoginForm() {
         <div>
           <button
             type="submit"
-            className="w-full mt-2 text-white px-4 py-2 rounded bg-[#e86262] hover:bg-[#DF4A4A] cursor-pointer"
+            className={`w-full mt-2 text-white px-4 py-2 rounded bg-[#e86262] hover:bg-[#DF4A4A] ${loading ? 'cursor-not-allowed' : 'cursor-pointer'}`}
           >
             {
-              loading ? 'loading' : 'Login'
+              loading ?  
+              <div>
+                
+<span class="loading loading-spinner loading-sm"></span> <span>Loading...</span>
+              </div>
+               : 'Login'
             }
           </button>
         </div>
