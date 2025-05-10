@@ -4,7 +4,7 @@ import userRoutes from './routes/userRoutes.mjs'
 import dotenv from 'dotenv'
 import connectDB from './config/db.mjs';
 import cookieParser from 'cookie-parser';
-import UserModel from './models/userModel.mjs';
+dotenv.config();
 let PORT = process.env.PORT || 3000
 // cors policy error solved
 const corsOptions = {
@@ -13,7 +13,6 @@ const corsOptions = {
   optionSuccessStatus: 200
 }
 
-dotenv.config();
 connectDB()
 
 let app = express();
@@ -729,10 +728,8 @@ const students = [
 app.use('/api/user',userRoutes);
 app.get('/ping',async(req,res) => {
   try {
-    // await UserModel.dropIndex("emergency_phone_1")
 
-    await UserModel.insertMany(students)
-    return res.send("success")
+    return res.send("pong")
   } catch (error) {
     res.json({
       message : error.message,
