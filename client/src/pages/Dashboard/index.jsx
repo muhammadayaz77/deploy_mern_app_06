@@ -1,7 +1,11 @@
 import { Route, Routes } from "react-router-dom"
-import Layout from "../../components/shared/layout"
+import Layout from "../../components/dashboard/layout"
 import Dashboard from "./Student/Dashboard"
 import Profile from "./Student/Profile"
+
+// =====(CSS)====
+import './dashboard.style.css'
+
 
 function Index() {
   return (

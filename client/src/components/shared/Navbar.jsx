@@ -23,7 +23,7 @@ function Navbar() {
 
           {/* Right section */}
           <div className="hidden lg:flex space-x-4">
-            <button className="px-4 py-2 text-gray-600 hover:text-black transition-all font-light cursor-pointer">Sign in</button>
+            <Link to='/web/login'  className="px-4 py-2 text-gray-600 hover:text-black transition-all font-light cursor-pointer">Sign in</Link>
             <Link to='/contact-us' className="text-white px-4 py-2 rounded bg-[#e86262] hover:bg-[#DF4A4A] cursor-pointer">Contact Us</Link>
           </div>
 
@@ -41,7 +41,7 @@ function Navbar() {
         <div className="px-4 pt-2 pb-4 space-y-2">
           <a href="#" className="block py-2 text-gray-600 hover:text-black transition-all font-light">Events</a>
           <a href="#" className="block py-2 text-gray-600 hover:text-black transition-all font-light">Courses</a>
-          <a href="#" className="block py-2 text-gray-600 hover:text-black transition-all font-light">Sign Up</a>
+          <Link to='/web/login' className="block py-2 text-gray-600 hover:text-black transition-all font-light">Sign in</Link>
           <Link to='/contact-us' className="mt-2 text-white px-4 py-2 rounded bg-[#e86262] hover:bg-[#DF4A4A] cursor-pointer">
             Contact Us
           </Link>

@@ -10,6 +10,7 @@ function Index() {
     <Navbar />
     <Routes>
       <Route path='/contact-us' element={<ContactUs />} />
+      <Route path='/*' element={<div className='mt-20'>Page Not Found</div>} />
     </Routes>
     <Footer />
     </>
