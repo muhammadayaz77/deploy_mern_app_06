@@ -1,23 +1,17 @@
-import React from 'react'
-import { Route, Routes } from 'react-router-dom'
-import Dashboard from './Student/Dashboard'
-import { Analytics } from './Student/analytics'
-import { Layout } from '../../components/shared/layout'
-import { Team } from './Student/team'
-import { DashboardPage } from './Student/DashboardPage'
+import { Route, Routes } from "react-router-dom"
+import Layout from "../../components/shared/layout"
+import Dashboard from "./Student/Dashboard"
+import Profile from "./Student/Profile"
 
 function Index() {
   return (
-    <>
     <Routes>
-      <Route path='/' element={<Layout />} />
-      <Route path='/analytics' element={<Analytics />} />
-      <Route path='/team' element={<Team />} />
-      <Route path='*' element={<DashboardPage />} />
-
-
+      <Route path="/" element={<Layout />}>
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/profile" element={<Profile />} />
+        {/* Add more routes as needed */}
+      </Route>
     </Routes>
-    </>
   )
 }
 
