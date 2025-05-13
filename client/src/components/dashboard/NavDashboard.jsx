@@ -24,7 +24,7 @@ import { Link } from "react-router-dom";
 
 function NavDashboard({ toggleSidebar, sidebarOpen }) {
   return (
-    <header className="flex h-16 items-center justify-between border-b px-4 md:px-6 z-50 bg-[#B9B2F1] text-white">
+    <header className="flex h-14 items-center justify-between border-b px-4 md:px-6 z-50 bg-[#B9B2F1] text-white">
       <div className="flex items-center">
       <button
   onClick={toggleSidebar}

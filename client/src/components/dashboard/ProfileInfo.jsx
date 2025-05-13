@@ -4,7 +4,7 @@ import ProfileForm from "./ProfileForm";
 function ProfileInfo() {
   return (
     <div className="shadow-sm">
-      <div className="flex gap-5 primary-bg p-5 pb-8 text-white">
+      <div className="flex flex-col items-center lg:items-start lg:flex-row gap-5 primary-bg p-5 pb-8 text-white">
         {/* Profile Image */}
         <div>
           <Avatar className="cursor-pointer h-22 w-22">
@@ -13,13 +13,13 @@ function ProfileInfo() {
           </Avatar>
         </div>
         {/* Profile Head Details */}
-        <div className="flex flex-col gap-3">
-          <div className="flex flex-col text-[17px] font-medium">
+        <div className="flex flex-col lg:items-start gap-3">
+          <div className="flex flex-col text-[17px] font-medium text-center lg:text-start">
             <span>Muhammad Ayaz</span>
             <span>BSCS-221331</span>
             <span>Faculty of Physical and Numerical Sciences</span>
           </div>
-          <div className="flex gap-10">
+          <div className="flex flex-wrap justify-center lg:justify-start gap-10">
             <div className="flex flex-col">
               <span className="text-xl font-semibold">Under Graduate</span>
               <span className="text-center text-sm">Career</span>

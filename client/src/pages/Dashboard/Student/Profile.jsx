@@ -7,11 +7,11 @@ function Profile() {
   return (
     <div>
       <SubNavDashboard />
-      <div className='grid grid-cols-12 p-5 gap-10'>
-          <div className='col-span-8'>
+      <div className='grid grid-cols-12 p-4 md:p-5 lg:gap-10'>
+          <div className='lg:col-span-8 col-span-12'>
           <ProfileInfo />
           </div>
-          <div className='col-span-4'>
+          <div className='lg:col-span-4 col-span-12'>
             <ProfileNotification />
           </div>
 
