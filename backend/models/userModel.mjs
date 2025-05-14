@@ -47,7 +47,6 @@ let userSchema = mongoose.Schema({
     unique : false,
     trim : true,
     require : false
-
   },
   covid : {
     type : String,

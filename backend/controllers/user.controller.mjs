@@ -1,5 +1,5 @@
 import UserModel from "../models/userModel.mjs";
-
+import jwt from 'jsonwebtoken'
 
 
 export const login = async(req,res) => {
@@ -28,8 +28,15 @@ export const login = async(req,res) => {
         success : false
       })
     }
+    let token = jwt.sign({userId : existingUser._id},process.env.SECRET,{expiresIn : '1h'})
 
-    return res.status(200).json({
+
+    return res.status(200).cookie("token",token, {
+      maxAge: 1* 24 * 60 * 60 * 1000,
+      httpOnly: true,
+      sameSite: "strict",
+      secure : false
+    }).json({
       message : "You are logged in",
       success : true
     })
@@ -38,6 +45,23 @@ export const login = async(req,res) => {
     return res.json({
       message : error.message,
       success : false
+    })
+  }
+}
+
+export const updateProfile = async(req,res) => {
+  try {
+    if (req.file) {
+      const file = req.file;
+      const fileUri = getDataUri(file);
+      const cloudResponse = await cloudinary.uploader.upload(fileUri.content);
+      user.profile.resume = cloudResponse.secure_url;
+      user.profile.resumeOriginalName = file.originalname;
+    }
+  } catch (error) {
+    return res.status(400).json({
+      message : error.message,
+      success: false
     })
   }
 }

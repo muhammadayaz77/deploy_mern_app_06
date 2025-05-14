@@ -4,6 +4,7 @@ import userRoutes from './routes/userRoutes.mjs'
 import dotenv from 'dotenv'
 import connectDB from './config/db.mjs';
 import cookieParser from 'cookie-parser';
+import isAuthenticated from './middleware/isAuthenticated.mjs';
 dotenv.config();
 let PORT = process.env.PORT || 3000
 // cors policy error solved
@@ -728,7 +729,6 @@ const students = [
 app.use('/api/user',userRoutes);
 app.get('/ping',async(req,res) => {
   try {
-
     return res.send("pong")
   } catch (error) {
     res.json({
