@@ -7,7 +7,7 @@ function Profile() {
   return (
     <div>
       <SubNavDashboard />
-      <div className='grid grid-cols-12 p-4 md:p-5 lg:gap-10'>
+      <div className='grid grid-cols-12 p-4 md:p-5 lg:gap-5'>
           <div className='lg:col-span-9 col-span-12'>
           <ProfileInfo />
           </div>
