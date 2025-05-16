@@ -20,10 +20,13 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Link, useNavigate } from "react-router-dom";
 import useLogout from "../../custom-hooks/useLogout";
+import { useDispatch } from "react-redux";
+import { setLogout } from "../../redux/Slices/authSlice";
 
 function NavDashboard({ toggleSidebar, sidebarOpen }) {
   const navigate = useNavigate();
   const logout = useLogout();
+  const dispatch = useDispatch();
   const [isLoggingOut, setIsLoggingOut] = React.useState(false);
 
   const handleLogout = () => {
@@ -31,6 +34,7 @@ function NavDashboard({ toggleSidebar, sidebarOpen }) {
     logout()
       .then((res) => {
         console.log("Logout successful:", res.data);
+        dispatch(setLogout());
         window.toastify(res.data.message,'success');
         navigate("/web/login");
       })
