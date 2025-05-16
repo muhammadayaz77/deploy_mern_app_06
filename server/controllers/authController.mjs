@@ -60,7 +60,10 @@ export const login = async (req, res) => {
 
     // Check if user exists
     const user = await User.findOne({ email });
-    if (!user) return res.status(400).json({ message: 'Invalid credentials' });
+    if (!user) return res.status(400).json({ 
+      message: 'Invalid credentials',
+      success : false
+    });
 
     // Check password
     const isMatch = await bcrypt.compare(password, user.password);
@@ -102,6 +105,36 @@ export const getMe = async (req, res) => {
   }
 };
 
+// Change Password
+
+export const changePassword = async(req,res) => {
+  try {
+    let {oldPassword,newPassword} = req.body;
+    let user = await User.findById(req.user.id);
+
+    let isMatch = await bcrypt.compare(oldPassword,user.password)
+    if(!isMatch)
+      return res.status(400).json(
+    {message : 'Old password is incorrect',
+      success : false
+    });
+
+    let hashPassword = await bcrypt.hash(newPassword,10)
+
+    user.password = hashPassword;
+    user.save();
+    res.status(200).json(
+      {
+        message : "Password changed successfully",
+        success : true
+      }
+    )
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({message : 'Server error',success : false});
+  }
+}
+
 // Logout user
 export const logout = async (req, res) => {
   try {
@@ -109,6 +142,6 @@ export const logout = async (req, res) => {
     res.json({ message: 'Logout successful' });
   } catch (err) {
     console.error(err.message);
-    res.status(500).send('Server error');
+    res.status(500).json({message : 'Server error',success : false});
   }
 };
