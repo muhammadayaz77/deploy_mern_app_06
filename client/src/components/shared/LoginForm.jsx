@@ -3,9 +3,12 @@ import { Link, useNavigate } from "react-router-dom";
 import { AUTH_API_ENDPOINT } from "../../utils/constants";
 import axios from 'axios'
 import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { setUser } from "../../redux/Slices/authSlice";
 
 
 function LoginForm() {
+  const dispatch = useDispatch();
   const { register, handleSubmit } = useForm();
   const navigate = useNavigate(null);
   let [loading,setLoading] = useState(false);
@@ -21,6 +24,7 @@ function LoginForm() {
       })
       .then(res => {
         console.log("res : ",res)
+        dispatch(setUser(res.data))
         window.toastify(res?.data?.message || 'You are logged in','success')
         navigate('/student/dashboard')
       })
@@ -75,7 +79,7 @@ function LoginForm() {
               loading ?  
               <div>
                 
-<span class="loading loading-spinner loading-sm"></span> <span>Loading...</span>
+<span className="loading loading-spinner loading-sm"></span> <span>Loading...</span>
               </div>
                : 'Login'
             }
