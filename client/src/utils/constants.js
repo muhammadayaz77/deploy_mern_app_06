@@ -1,4 +1,4 @@
 
 
 
-export const AUTH_API_ENDPOINT = 'http://localhost:3000/api/user/login'
+export const AUTH_API_ENDPOINT = 'http://localhost:5000/api/auth/login'

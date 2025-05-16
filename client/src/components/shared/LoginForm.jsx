@@ -15,12 +15,13 @@ function LoginForm() {
       setLoading(true);
       await axios.post(AUTH_API_ENDPOINT,data)
       .then(res => {
+        console.log("res : ",res)
         window.toastify(res?.data?.message || 'You are logged in','success')
         navigate('/student/dashboard')
       })
       .catch(err => {
         console.log(err)
-        window.toastify(err?.response.data.message || 'Log in failed!','error')
+        window.toastify(err?.response?.data.message || 'Log in failed!','error')
 
       })
       .finally(() => {
