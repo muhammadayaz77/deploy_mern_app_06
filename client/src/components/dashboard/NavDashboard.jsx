@@ -85,12 +85,12 @@ function NavDashboard({ toggleSidebar, sidebarOpen }) {
             className="flex items-center gap-3 text-base p-2 hover:rounded-md cursor-pointer w-full"
             >
 
-            <div className="flex items-center gap-3 text-base p-2 hover:bg-gray-200 hover:rounded-md cursor-pointer">
+            <Link to='/student/credentials/change' className="flex items-center gap-3 text-base p-2 hover:bg-gray-200 hover:rounded-md cursor-pointer">
               <span>
                 <TbLockPassword className="h-5 w-5" />
               </span>
               <span className="text-gray-700">Change Password</span>
-            </div>
+            </Link>
             </DropdownMenuItem>
             <DropdownMenuItem
             asChild

@@ -5,17 +5,23 @@ import Profile from "./Student/Profile"
 
 // =====(CSS)====
 import './dashboard.style.css'
+import ChangePassword from "./ChangePassword"
+import SubNavDashboard from "../../components/dashboard/SubNavDashboard"
 
 
 function Index() {
   return (
+    <>
+    {/* <SubNavDashboard /> */}
     <Routes>
       <Route path="/" element={<Layout />}>
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/credentials/change" element={<ChangePassword />} />
         {/* Add more routes as needed */}
       </Route>
     </Routes>
+    </>
   )
 }
 
