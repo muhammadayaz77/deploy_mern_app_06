@@ -7,13 +7,18 @@ import { useState } from "react";
 
 function LoginForm() {
   const { register, handleSubmit } = useForm();
-  let navigate = useNavigate(null);
+  const navigate = useNavigate(null);
   let [loading,setLoading] = useState(false);
 
   const onSubmit = async(data) => {
     // Here, send the data to backend API using fetch/axios
       setLoading(true);
-      await axios.post(AUTH_API_ENDPOINT,data)
+      await axios.post(AUTH_API_ENDPOINT,data,{
+        headers : {
+          "Content-Type" : 'application/json'
+        },
+        withCredentials : true
+      })
       .then(res => {
         console.log("res : ",res)
         window.toastify(res?.data?.message || 'You are logged in','success')

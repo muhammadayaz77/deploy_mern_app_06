@@ -3,9 +3,32 @@ import React from 'react'
 import { Home, User, BookOpen, Calendar, Settings, LogOut } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { cn } from "@/lib/utils"
+import { useNavigate } from 'react-router-dom';
+import useLogout from '../../custom-hooks/useLogout';
 
 
 function Sidebar({sidebarOpen}) {
+  const navigate = useNavigate();
+  const logout = useLogout();
+  const [isLoggingOut, setIsLoggingOut] = React.useState(false);
+
+  const handleLogout = () => {
+    setIsLoggingOut(true);
+    logout()
+      .then((res) => {
+        console.log("Logout successful:", res.data);
+        window.toastify(res.data.message,'success');
+        navigate("/web/login");
+      })
+      .catch((err) => {
+        console.error("Logout failed:", err);
+        window.toastify(err.response.data.message,'error');
+        // Optionally show error to user
+      })
+      .finally(() => {
+        setIsLoggingOut(false);
+      });
+  };
   return (
     <aside
     className={cn(
@@ -66,13 +89,13 @@ function Sidebar({sidebarOpen}) {
         </nav>
 
         <div className="mt-auto pt-4 border-t">
-          <a
-            href="/logout"
+          <button
+           onClick={handleLogout}
             className="flex items-center gap-2 rounded-md px-3 py-2 text-sm text-red-500 hover:bg-accent"
           >
             <LogOut className="h-4 w-4" />
             <span>Logout</span>
-          </a>
+          </button>
         </div>
       </div>
     </div>
