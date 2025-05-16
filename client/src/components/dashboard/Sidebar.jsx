@@ -91,7 +91,7 @@ function Sidebar({sidebarOpen}) {
         <div className="mt-auto pt-4 border-t">
           <button
            onClick={handleLogout}
-            className="flex items-center gap-2 rounded-md px-3 py-2 text-sm text-red-500 hover:bg-accent"
+            className="flex items-center gap-2 rounded-md px-3 py-2 text-sm text-red-500 hover:bg-accent w-full cursor-pointer"
           >
             <LogOut className="h-4 w-4" />
             <span>Logout</span>

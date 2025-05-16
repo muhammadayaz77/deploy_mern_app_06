@@ -1,12 +1,11 @@
 import { Route, Routes } from "react-router-dom"
-import Layout from "../../components/dashboard/layout"
-import Dashboard from "./Student/Dashboard"
-import Profile from "./Student/Profile"
+import Layout from "../../../components/dashboard/layout"
+import Dashboard from "./Dashboard"
+import Profile from "./Profile"
 
 // =====(CSS)====
 import './dashboard.style.css'
-import ChangePassword from "./ChangePassword"
-import SubNavDashboard from "../../components/dashboard/SubNavDashboard"
+import ChangePassword from "../ChangePassword"
 
 
 function Index() {
