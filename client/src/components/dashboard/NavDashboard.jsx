@@ -20,13 +20,14 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Link, useNavigate } from "react-router-dom";
 import useLogout from "../../custom-hooks/useLogout";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setLogout } from "../../redux/Slices/authSlice";
 
 function NavDashboard({ toggleSidebar, sidebarOpen }) {
   const navigate = useNavigate();
   const logout = useLogout();
   const dispatch = useDispatch();
+  let {user} = useSelector(store => store.auth)
   const [isLoggingOut, setIsLoggingOut] = React.useState(false);
 
   const handleLogout = () => {
@@ -75,7 +76,12 @@ function NavDashboard({ toggleSidebar, sidebarOpen }) {
           </div>
         </button>
 
-        <h1 className="text-lg font-semibold">Student Dashboard</h1>
+        <h1 className="text-lg font-semibold">
+          {
+            user.role === 'student' ? 'Student ' : user.role === 'sup_admin' ? "Super Admin " :
+            user.role === 'admin1' ? "Admin no. 1 " :  user.role === 'admin1' ? "Admin no. 2 " : ''
+          } 
+          Dashboard</h1>
       </div>
       <div className="flex items-center gap-5 mr-5">
         <FaBell className="text-white border-white h-5 w-5" />
@@ -91,6 +97,8 @@ function NavDashboard({ toggleSidebar, sidebarOpen }) {
             </Avatar>
           </DropdownMenuTrigger>
           <DropdownMenuContent>
+            {
+              user.role === 'student' ?
             <DropdownMenuItem
               asChild
               className="flex items-center gap-3 text-base p-2 hover:rounded-md cursor-pointer w-full"
@@ -102,6 +110,9 @@ function NavDashboard({ toggleSidebar, sidebarOpen }) {
                 <span className="text-gray-700">My Profile</span>
               </Link>
             </DropdownMenuItem>
+            :
+            ""
+            }
             <DropdownMenuItem
               asChild
               className="flex items-center gap-3 text-base p-2 hover:rounded-md cursor-pointer w-full"

@@ -5,9 +5,12 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { cn } from "@/lib/utils"
 import { useNavigate } from 'react-router-dom';
 import useLogout from '../../custom-hooks/useLogout';
+import { useSelector } from 'react-redux';
 
 
 function Sidebar({sidebarOpen}) {
+  let {user} = useSelector(store => store.auth);
+  console.log("user : ",user)
   const navigate = useNavigate();
   const logout = useLogout();
   const [isLoggingOut, setIsLoggingOut] = React.useState(false);
@@ -44,8 +47,8 @@ function Sidebar({sidebarOpen}) {
             <AvatarFallback>US</AvatarFallback>
           </Avatar>
           <div className="space-y-1">
-            <p className="text-sm font-medium leading-none">John Doe</p>
-            <p className="text-xs text-muted-foreground">john.doe@example.com</p>
+            <p className="text-sm font-medium leading-none">{user.name || "Guest"}</p>
+            <p className="text-xs text-muted-foreground">{user.email || ''}</p>
           </div>
         </div>
       </div>
