@@ -6,6 +6,8 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import axios from 'axios';
 import { REGISTER_API_ENDPOINT } from '../../../utils/constants';
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 function CreateAdmin() {
   const {
@@ -14,16 +16,19 @@ function CreateAdmin() {
     formState: { errors },
     watch,
     reset,
+    setValue, // Add this
   } = useForm({
     defaultValues: {
       name: '',
       email: '',
       password: '',
-      role: 'admin1'
+      role: 'admin1' // Set default here
     }
   });
 
   const [isLoading, setIsLoading] = React.useState(false);
+  const dispatch = useDispatch();
+  const navigate = useNavigate(null)
 
   const onSubmit = async (data) => {
     console.log('Form data:', data);
@@ -37,6 +42,8 @@ function CreateAdmin() {
     .then(res => {
       console.log(res);
       window.toastify(res.data.message,'success')
+      dispatch()
+      navigate('/sup-admin/manage-admin')
       reset();
     })
     .catch(err => {
@@ -137,32 +144,45 @@ function CreateAdmin() {
         </div>
 
         {/* Role Selection */}
-        <div className="mb-6">
-          <RadioGroup 
-            defaultValue="admin1"
-            onValueChange={(value) => console.log(value)}
-            className="flex gap-5 mt-4"
-          >
-            <div className="flex items-center space-x-2 cursor-pointer">
-              <RadioGroupItem 
-                value="admin1" 
-                id="admin1" 
-                {...register('role')}
-                className='cursor-pointer' 
-              />
-              <Label htmlFor="admin1" className='cursor-pointer'>Admin1</Label>
-            </div>
-            <div className="flex items-center space-x-2 cursor-pointer">
-              <RadioGroupItem 
-                value="admin2" 
-                id="admin2" 
-                {...register('role')}
-                className='cursor-pointer' 
-              />
-              <Label htmlFor="admin2" className='cursor-pointer'>Admin2</Label>
-            </div>
-          </RadioGroup>
-        </div>
+        {/* Role Selection */}
+<div className="mb-6">
+  <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+    Select Role
+  </label>
+  <RadioGroup 
+    onValueChange={(value) => {
+      // Manually set the value in react-hook-form's state
+      setValue('role', value);
+    }}
+    defaultValue={watch('role') || 'admin1'} // Use watched value or default
+    className="flex gap-5 mt-2"
+  >
+    <div className="flex items-center space-x-2 cursor-pointer">
+      <RadioGroupItem 
+        value="admin1" 
+        id="admin1"
+        className='cursor-pointer' 
+      />
+      <Label htmlFor="admin1" className='cursor-pointer'>Admin1</Label>
+    </div>
+    <div className="flex items-center space-x-2 cursor-pointer">
+      <RadioGroupItem 
+        value="admin2" 
+        id="admin2"
+        className='cursor-pointer' 
+      />
+      <Label htmlFor="admin2" className='cursor-pointer'>Admin2</Label>
+    </div>
+  </RadioGroup>
+  {/* Hidden input for react-hook-form */}
+  <input
+    type="hidden"
+    {...register('role', { required: 'Role is required' })}
+  />
+  {errors.role && (
+    <p className="mt-1 text-sm text-red-600">{errors.role.message}</p>
+  )}
+</div>
 
         {/* Submit Button */}
         <div className="mt-8">
