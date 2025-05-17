@@ -10,8 +10,10 @@ import auth from './routes/auth.route.mjs'
 import teacher from './routes/teacher.mjs'
 import marks from './routes/marks.mjs'
 import admin from './routes/admin.route.mjs'
-import User from './models/User.mjs';
+import superadmin from './routes/superadmin.route.mjs'
 
+
+import User from './models/User.mjs';
 dotenv.config()
 
 const app = express();
@@ -30,6 +32,7 @@ app.use(cookieParser());
 // Add after middleware section
 app.use('/api/auth', auth);
 app.use('/api/admin', admin);
+app.use('/api/superadmin', superadmin);
 app.use('/api/teacher',teacher);
 app.use('/api/marks', marks);
 app.use('/ping',async(req,res) => {
