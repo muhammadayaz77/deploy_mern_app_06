@@ -4,7 +4,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { cn } from "@/lib/utils"
 import { useNavigate,Link } from 'react-router-dom';
 import useLogout from '../../custom-hooks/useLogout';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 
 // React Icons
@@ -12,14 +12,17 @@ import { useSelector } from 'react-redux';
 import { GrUserAdmin } from "react-icons/gr";
 import { Home, User, BookOpen, Calendar, Settings, LogOut } from "lucide-react"
 import { LiaUsersCogSolid } from "react-icons/lia";
+import { setRemoveData } from '../../redux/Slices/adminSlice';
+import { setLogout } from '../../redux/Slices/authSlice';
 
 
 function Sidebar({sidebarOpen}) {
   let {user} = useSelector(store => store.auth);
-  console.log("user : ",user)
+  // console.log("user : ",user)
   const navigate = useNavigate();
   const logout = useLogout();
   const [isLoggingOut, setIsLoggingOut] = React.useState(false);
+  const dispatch = useDispatch()
 
   const handleLogout = () => {
     setIsLoggingOut(true);
@@ -27,6 +30,8 @@ function Sidebar({sidebarOpen}) {
       .then((res) => {
         console.log("Logout successful:", res.data);
         window.toastify(res.data.message,'success');
+        dispatch(setRemoveData())
+        dispatch(setLogout());
         navigate("/web/login");
       })
       .catch((err) => {

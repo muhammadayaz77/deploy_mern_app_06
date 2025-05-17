@@ -1,11 +1,13 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { GET_ALL_ADMIN_API_ENDPOINT } from "../utils/constants";
+import { setAllAdmin } from "../redux/Slices/adminSlice";
+import { useDispatch } from "react-redux";
 
 function useGetAllAdmin() {
-  const [admins, setAdmins] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  let dispatch = useDispatch()
 
   useEffect(() => {
     const controller = new AbortController();
@@ -23,7 +25,7 @@ function useGetAllAdmin() {
         });
         
         if (response.data.success) {
-          setAdmins(response.data.data);
+          dispatch(setAllAdmin(response.data.data))
           console.log(response)
         } else {
           setError(new Error(response.data.message || 'Failed to fetch admins'));
@@ -45,7 +47,7 @@ function useGetAllAdmin() {
     return () => controller.abort();
   }, []); // Empty dependency array means this runs once on mount
 
-  return { admins, loading, error };
+  return { loading, error };
 }
 
 export default useGetAllAdmin;

@@ -20,6 +20,7 @@ import { Link, useNavigate } from "react-router-dom";
 import useLogout from '../../custom-hooks/useLogout'
 import { useDispatch, useSelector } from "react-redux";
 import { setLogout } from "../../redux/Slices/authSlice";
+import { setRemoveData } from "../../redux/Slices/adminSlice";
 
 function NavDashboard({ toggleSidebar, sidebarOpen }) {
   const navigate = useNavigate();
@@ -34,6 +35,7 @@ function NavDashboard({ toggleSidebar, sidebarOpen }) {
       .then((res) => {
         console.log("Logout successful:", res.data);
         dispatch(setLogout());
+        dispatch(setRemoveData())
         window.toastify(res.data.message,'success');
         navigate("/web/login");
       })

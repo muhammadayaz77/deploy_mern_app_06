@@ -39,7 +39,6 @@ export const removeAdmin = async (req, res) => {
         success: false,
       });
     }
-    console.log("not in db : ",removedUser)
 
     return res.status(200).json({
       message: 'Admins deleted successfully',
