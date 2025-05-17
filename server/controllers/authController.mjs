@@ -23,6 +23,12 @@ export const register = async (req, res) => {
          success : false
        }
     );
+    if(!name || !email || !password || !role){
+      res.status(400).json({
+        message : "Required all fields",
+        success : false
+      })
+    }
 
     // allow admin 
     if(role !== 'admin1' && role !== 'admin2')

@@ -6,7 +6,7 @@ import { useLocation } from 'react-router-dom';
 function SubNavDashboard() {
   const location = useLocation(); // Get the current location object
   const currentPath = location.pathname; // Extract the current path
-  console.log(currentPath)
+  // console.log(currentPath)
   
   return (
     <div className='flex items-center bg-white border-b-4 py-2 pl-3 gap-2 shadow-md'>
@@ -17,6 +17,9 @@ function SubNavDashboard() {
         <span className='primary-text'>Profile</span>
         : currentPath === '/student/credentials/change' ? 
         <span className='primary-text'>Change Password</span>
+        :
+        currentPath === '/sup-admin/create-admin' ? 
+        <span className='primary-text'>Create Admin</span>
         : ''
       }
     </div>
