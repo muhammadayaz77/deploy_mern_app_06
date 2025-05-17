@@ -1,11 +1,16 @@
 import React from 'react'
 
-import { Home, User, BookOpen, Calendar, Settings, LogOut } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { cn } from "@/lib/utils"
-import { useNavigate } from 'react-router-dom';
+import { useNavigate,Link } from 'react-router-dom';
 import useLogout from '../../custom-hooks/useLogout';
 import { useSelector } from 'react-redux';
+
+
+// React Icons
+
+import { GrUserAdmin } from "react-icons/gr";
+import { Home, User, BookOpen, Calendar, Settings, LogOut } from "lucide-react"
 
 
 function Sidebar({sidebarOpen}) {
@@ -54,41 +59,74 @@ function Sidebar({sidebarOpen}) {
       </div>
       <div className="flex-1 overflow-auto p-2">
         <nav className="flex flex-col gap-1">
-          <a
-            href="/student/dashboard"
-            className="flex items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-accent"
+          {
+            user.role === 'student' ?
+            <>
+          <Link
+            to="/student/dashboard"
+            className="flex items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-accent text-black "
           >
             <Home className="h-4 w-4" />
             <span>Dashboard</span>
-          </a>
-          <a
-            href="/student/profile"
+          </Link>
+          <Link
+            to="/student/profile"
             className="flex items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-accent"
           >
             <User className="h-4 w-4" />
             <span>Profile</span>
-          </a>
-          <a
-            href="/student/courses"
+          </Link>
+          <Link
+            to="#"
             className="flex items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-accent"
           >
             <BookOpen className="h-4 w-4" />
             <span>Courses</span>
-          </a>
-          <a
-            href="/student/schedule"
+          </Link>
+          <Link
+            to="#"
             className="flex items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-accent"
           >
             <Calendar className="h-4 w-4" />
             <span>Schedule</span>
-          </a>
-          <a
-            href="/student/settings"
+          </Link>
+          <Link
+            to="#"
             className="flex items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-accent"
           >
             <Settings className="h-4 w-4" />
             <span>Settings</span>
-          </a>
+          </Link>
+          </>
+          :
+          user.role === 'sup_admin'
+          ?
+          <>
+          <Link
+            to="/sup-admin/create-admin"
+            className="flex items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-accent"
+          >
+            <GrUserAdmin className="h-4 w-4" />
+            <span>Create Admin</span>
+          </Link>
+          <Link
+            to="#"
+            className="flex items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-accent"
+          >
+            <Settings className="h-4 w-4" />
+            <span>Settings</span>
+          </Link>
+          <Link
+            to="#"
+            className="flex items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-accent"
+          >
+            <Settings className="h-4 w-4" />
+            <span>Settings</span>
+          </Link>
+            </>
+            :
+            <></>
+          }
         </nav>
 
         <div className="mt-auto pt-4 border-t">
