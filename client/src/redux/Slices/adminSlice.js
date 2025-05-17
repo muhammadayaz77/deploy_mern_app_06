@@ -12,13 +12,16 @@ const adminSlice = createSlice({
       state.user = action.payload;
     },
     setRemoveAdmin : (state,action) => {
-      state.user.filter(item => item._id == action.payload)
+      state.user = state.user.filter(item => item._id == action.payload)
     },
     setRemoveData : (state,action) => {
       state.user = [];
+    },
+    setAddAdmin : (state,action) => {
+      state.user.push(action.payload)
     }
   },
 });
 
-export const { setAllAdmin,setRemoveAdmin,setRemoveData } = adminSlice.actions;
+export const { setAllAdmin,setRemoveAdmin,setRemoveData,setAddAdmin } = adminSlice.actions;
 export default adminSlice.reducer;

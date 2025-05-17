@@ -8,6 +8,7 @@ import axios from 'axios';
 import { REGISTER_API_ENDPOINT } from '../../../utils/constants';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { setAddAdmin } from '../../../redux/Slices/adminSlice';
 
 function CreateAdmin() {
   const {
@@ -40,9 +41,9 @@ function CreateAdmin() {
       withCredentials : true
     })
     .then(res => {
-      console.log(res);
+      console.log('creaete res : ',res);
       window.toastify(res.data.message,'success')
-      dispatch()
+      dispatch(setAddAdmin(res.data.data));
       navigate('/sup-admin/manage-admin')
       reset();
     })

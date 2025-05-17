@@ -74,7 +74,14 @@ export const register = async (req, res) => {
       (err, token) => {
         if (err) throw err;
         res.cookie('token', token, cookieOptions);
-        res.json({ message: 'Registration successful' });
+        res.json({ 
+          message: 'Admin added successful',
+          data : {
+            id: user.id,
+            name: user.name,
+            email: user.email,
+            role: user.role
+          }});
       }
     );
   } catch (err) {
