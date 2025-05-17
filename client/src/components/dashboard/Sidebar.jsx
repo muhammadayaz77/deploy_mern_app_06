@@ -11,6 +11,7 @@ import { useSelector } from 'react-redux';
 
 import { GrUserAdmin } from "react-icons/gr";
 import { Home, User, BookOpen, Calendar, Settings, LogOut } from "lucide-react"
+import { LiaUsersCogSolid } from "react-icons/lia";
 
 
 function Sidebar({sidebarOpen}) {
@@ -110,11 +111,11 @@ function Sidebar({sidebarOpen}) {
             <span>Create Admin</span>
           </Link>
           <Link
-            to="#"
+            to="/sup-admin/manage-admin"
             className="flex items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-accent"
           >
-            <Settings className="h-4 w-4" />
-            <span>Settings</span>
+            <LiaUsersCogSolid className="h-4 w-4" />
+            <span>Manage Admin</span>
           </Link>
           <Link
             to="#"

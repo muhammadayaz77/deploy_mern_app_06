@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useReducer } from "react";
 import { ChevronLeft } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
@@ -14,12 +14,10 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Link, useNavigate } from "react-router-dom";
-import useLogout from "../../custom-hooks/useLogout";
+import useLogout from '../../custom-hooks/useLogout'
 import { useDispatch, useSelector } from "react-redux";
 import { setLogout } from "../../redux/Slices/authSlice";
 
@@ -117,7 +115,7 @@ function NavDashboard({ toggleSidebar, sidebarOpen }) {
               asChild
               className="flex items-center gap-3 text-base p-2 hover:rounded-md cursor-pointer w-full"
             >
-              <Link to='/student/credentials/change' className="flex items-center gap-3 text-base p-2 hover:bg-gray-200 hover:rounded-md cursor-pointer">
+              <Link to={`${user.role === 'student' ? '/student/credentials/change' : user.role === 'sup_admin' ? '/sup-admin/credentials/change' : ''}`} className="flex items-center gap-3 text-base p-2 hover:bg-gray-200 hover:rounded-md cursor-pointer">
                 <span>
                   <TbLockPassword className="h-5 w-5" />
                 </span>
