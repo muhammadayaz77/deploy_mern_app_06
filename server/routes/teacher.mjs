@@ -1,6 +1,6 @@
 import express from 'express'
-import {auth} from '../middleware/auth.mjs'
-import {roleAuth} from '../middleware/auth.mjs'
+import {auth} from '../middleware/auth.middleware.mjs'
+import {roleAuth} from '../middleware/auth.middleware.mjs'
 import User from '../models/User.mjs'
 import Marks from '../models/Marks.mjs'
 

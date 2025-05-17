@@ -14,7 +14,7 @@ export const auth = function(req, res, next) {
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     req.user = decoded.user;
-    console.log(req.user)
+    // console.log(req.user)
     next();
   } catch (err) {
     res.status(401).json({ message: 'Token is not valid' });
@@ -23,6 +23,7 @@ export const auth = function(req, res, next) {
 
 
 // Role-based middleware
+
 export const roleAuth = (roles) => {
   return (req, res, next) => {
     if (!roles.includes(req.user.role)) {

@@ -13,11 +13,36 @@ const cookieOptions = {
 // Register a new user (only for sup_admin to create admins)
 export const register = async (req, res) => {
   try {
-    const { name, email, password, role, teacherCode } = req.body;
+    const { name, email, password, role } = req.body;
     
     // Check if user exists
     let user = await User.findOne({ email });
-    if (user) return res.status(400).json({ message: 'User already exists' });
+    if (user) return res.status(400).json(
+      {
+         message: 'User already exists',
+         success : false
+       }
+    );
+
+    // allow admin 
+    if(role !== 'admin1' && role !== 'admin2')
+    {
+      return res.status(400).json({
+        message : `You can't add '${role}' role.`,
+        success : false
+      })
+    }
+
+    // Check if role exists
+    let findRole = await User.findOne({role});
+    if(findRole)
+    {
+      return res.status(400).json({
+        message : "Admin with current role is already exists",
+        success : false
+      })
+    }
+    
 
     // Hash password
     const salt = await bcrypt.genSalt(10);
@@ -29,7 +54,6 @@ export const register = async (req, res) => {
       email,
       password: hashedPassword,
       role,
-      teacherCode,
       createdBy: req.user.id
     });
 
