@@ -3,7 +3,6 @@ import jwt from 'jsonwebtoken'
 export const auth = function(req, res, next) {
   // Get token from cookies
   const token = req.cookies.token;
-  // console.log(token)
 
   // Check if no token
   if (!token) {
@@ -27,7 +26,8 @@ export const auth = function(req, res, next) {
 export const roleAuth = (roles) => {
   return (req, res, next) => {
     if (!roles.includes(req.user.role)) {
-      return res.status(403).json({ message: 'Access denied' });
+      console.log(req.user)
+      return res.status(403).json({message: 'Access denied' });
     }
     next();
   };

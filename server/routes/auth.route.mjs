@@ -6,7 +6,7 @@ import {getMe,register,login, logout, changePassword} from '../controllers/auth.
 const router = express.Router();
 
 // super admin
-router.post('/register', auth,roleAuth(['sup_admin']), register);
+router.post('/register',auth,roleAuth(['sup_admin']), register);
 
 router.post('/login', login);
 router.get('/me', auth, getMe);

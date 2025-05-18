@@ -32,35 +32,37 @@ export default function ManageAdmin() {
   const [isRemoving, setIsRemoving] = useState(false);
 
   const handleRemoveAdmin = async (id) => {
-    // Check if current user is super admin
-    if (currentUser?.role !== 'sup_admin') {
-      window.toastify('Only Super Admin can remove admins','error');
-      return;
-    }
-
-    setIsRemoving(true);
     try {
       const response = await axios.post(
         REMOVE_ADMIN_API_ENDPOINT,
         { id },
         {
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 
+            'Content-Type': 'application/json',
+            // 'Authorization': `Bearer ${localStorage.getItem('token')}` // Add auth token
+          },
           withCredentials: true
         }
       );
-
+  
       if (response.data.success) {
         dispatch(setRemoveAdmin(id));
-        window.toastify('Admin removed successfully','success');
+        console.log("remove admin res : ",response)
+        window.toastify(response.data.message,'success');
+        return;
       } else {
-        window.toastify(response.data.message || 'Failed to remove admin','error');
+        window.toastify(response.data.message,'error');
+        console.log("remove admin err : ",response);
+        return
       }
     } catch (err) {
-      const errorMsg = err.response?.data?.message || 'Error removing admin';
+      const errorMsg = err.response?.data?.message || 'Failed to remove admin';
       window.toastify(errorMsg,'error');
-      console.error("Remove error:", err);
-    } finally {
-      setIsRemoving(false);
+      return;
+      if (err.response?.status === 401) {
+        // Handle unauthorized (redirect to login)
+        // window.location.href = '/login';
+      }
     }
   };
 
@@ -85,7 +87,6 @@ export default function ManageAdmin() {
             <TableCell>{item.email}</TableCell>
             <TableCell className="font-medium">
               {item.role}
-              {item.role === 'sup_admin' && ' (Super Admin)'}
             </TableCell>
             <TableCell className="text-right flex justify-end">
               <DropdownMenu>
