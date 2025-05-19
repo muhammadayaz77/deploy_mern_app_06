@@ -5,6 +5,7 @@ import { Search } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import useGetAllStudents from "../../../custom-hooks/useGetAllStudents"
 
 
 
@@ -50,6 +51,9 @@ export default function Grades() {
     handleSubmit,
     formState: { errors },
   } = useForm()
+
+  // get all students
+  useGetAllStudents()
 
   // Filter students based on search term
   const filteredStudents = students.filter((student) => student.name.toLowerCase().includes(searchTerm.toLowerCase()))
