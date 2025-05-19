@@ -117,7 +117,7 @@ function NavDashboard({ toggleSidebar, sidebarOpen }) {
               asChild
               className="flex items-center gap-3 text-base p-2 hover:rounded-md cursor-pointer w-full"
             >
-              <Link to={`${user.role === 'student' ? '/student/credentials/change' : user.role === 'sup_admin' ? '/sup-admin/credentials/change' : ''}`} className="flex items-center gap-3 text-base p-2 hover:bg-gray-200 hover:rounded-md cursor-pointer">
+              <Link to={`${user.role === 'student' ? '/student/credentials/change' : user.role === 'sup_admin' ? '/sup-admin/credentials/change' : user.role === 'admin1' || user.role == 'admin2' ? '/admin/credentials/change' : ''}`} className="flex items-center gap-3 text-base p-2 hover:bg-gray-200 hover:rounded-md cursor-pointer">
                 <span>
                   <TbLockPassword className="h-5 w-5" />
                 </span>

@@ -14,6 +14,8 @@ import { Home, User, BookOpen, Calendar, Settings, LogOut } from "lucide-react"
 import { LiaUsersCogSolid } from "react-icons/lia";
 import { setRemoveData } from '../../redux/Slices/adminSlice';
 import { setLogout } from '../../redux/Slices/authSlice';
+import { SiGoogleclassroom } from "react-icons/si";
+
 
 
 function Sidebar({sidebarOpen}) {
@@ -46,7 +48,7 @@ function Sidebar({sidebarOpen}) {
   return (
     <aside
     className={cn(
-      "fixed inset-y-0 left-0 top-16 z-40 w-64 transform border-r bg-background transition-transform duration-300 ease-in-out",
+      "fixed inset-y-0 left-0 top-14 z-40 w-64 transform border-r bg-background transition-transform duration-300 ease-in-out",
       sidebarOpen ? "translate-x-0" : "-translate-x-full",
     )}
   >
@@ -130,7 +132,24 @@ function Sidebar({sidebarOpen}) {
             <span>Settings</span>
           </Link>
             </>
-            :
+            : user.role == 'admin1' ? 
+            <>
+             <Link
+            to="/admin/assign-class"
+            className="flex items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-accent"
+          >
+
+            <SiGoogleclassroom className="h-4 w-4" />
+            <span>Assign Class</span>
+          </Link>
+          <Link
+            to="#"
+            className="flex items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-accent"
+          >
+            <Settings className="h-4 w-4" />
+            <span>Settings</span>
+          </Link>
+            </> : 
             <></>
           }
         </nav>

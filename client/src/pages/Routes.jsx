@@ -4,6 +4,7 @@ import Auth from './Auth/index'
 import Home from './Home/index'
 import StudentDashboard from './Dashboard/Student/index'
 import SuperAdminDashboard from './Dashboard/Super Admin/index'
+import AdminDashboard from './Dashboard/Admins/index'
 function Index() {
   return (
     <>
@@ -13,6 +14,7 @@ function Index() {
       <Route path='/*' element={<Home />} />
       <Route path='/student/*' element={<StudentDashboard />} />
       <Route path='/sup-admin/*' element={<SuperAdminDashboard />} />
+      <Route path='/admin/*' element={<AdminDashboard />} />
       {/* <Route path='/*' element={<Dashboard />} /> */}
     </Routes>
     </BrowserRouter>
