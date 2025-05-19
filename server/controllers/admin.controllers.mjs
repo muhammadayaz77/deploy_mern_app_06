@@ -24,7 +24,10 @@ export const assignTeacher = async (req, res) => {
     teacher.class = classId;
     await teacher.save();
 
-    res.json(updatedClass);
+    res.status(200).json({
+      message : 'Teacher has been assign to class',
+      success : false
+    });
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server error');

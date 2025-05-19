@@ -8,7 +8,8 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import useGetAllTeachersAndClasses from "../../../custom-hooks/useGetAllTeachersAndClasses"
 import { useSelector } from "react-redux"
-
+import axios from "axios"
+import { ASSIGN_TEACHER_API_ENDPOINT } from "../../../utils/constants"
 
 
 
@@ -35,30 +36,36 @@ function Assign() {
   useGetAllTeachersAndClasses();
   
   // Submit function to handle the data
-  const handleSubmit = () => {
+  const handleSubmit = async() => {
     if (!teacherValue || !classValue) return;
 
     setIsSubmitting(true);
 
     // Simulate API call
-    setTimeout(() => {
+
       const dataToSubmit = {
-        teacher: teacherValue,
-        class: classValue,
+        teacherId: teacherValue,
+        classId: classValue,
       }
 
       console.log("Submitting data:", dataToSubmit)
       setSubmittedData(dataToSubmit)
       setIsSubmitting(false)
 
-      // Here you would add your actual API call to send the data to the backend
-      // For example:
-      // fetch('/api/assign', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify(dataToSubmit)
-      // })
-    }, 1000)
+      // Here is the actual API call to send the data to the backend
+      await axios.post(ASSIGN_TEACHER_API_ENDPOINT,dataToSubmit,{
+        headers : {
+          'Content-Type' : 'application/json'
+        },
+        withCredentials : true
+      })
+      .then(res => {
+        console.log(res)
+        window.toastify(res.data.message,'success')
+      })
+      .catch(err => {
+        window.toastify(err.response.data.messsage,'error')
+      })
   }
 
   return (
