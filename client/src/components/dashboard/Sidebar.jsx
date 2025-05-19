@@ -15,6 +15,8 @@ import { LiaUsersCogSolid } from "react-icons/lia";
 import { setRemoveData } from '../../redux/Slices/adminSlice';
 import { setLogout } from '../../redux/Slices/authSlice';
 import { SiGoogleclassroom } from "react-icons/si";
+import { GiUpgrade } from "react-icons/gi";
+
 
 
 
@@ -150,6 +152,25 @@ function Sidebar({sidebarOpen}) {
             <span>Settings</span>
           </Link>
             </> : 
+            user.role == 'teacher' ? 
+            <>
+             <Link
+            to="/teacher/add-marks"
+            className="flex items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-accent"
+          >
+
+            <GiUpgrade className="h-4 w-4" />
+            <span>Add Marks</span>
+          </Link>
+          <Link
+            to="#"
+            className="flex items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-accent"
+          >
+
+            <Settings className="h-4 w-4" />
+            <span>Settings</span>
+          </Link>
+            </> :
             <></>
           }
         </nav>

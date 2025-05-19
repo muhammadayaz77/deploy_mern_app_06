@@ -6,46 +6,18 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import useGetAllStudents from "../../../custom-hooks/useGetAllStudents"
+import { useSelector } from "react-redux"
 
 
 
 // Sample student data
-const initialStudents = [
-  {
-    id: 1,
-    name: "John Doe",
-    assignment1: 4,
-    assignment2: 5,
-    quiz1: 3,
-    quiz2: 4,
-    mid: 25,
-    final: 45,
-  },
-  {
-    id: 2,
-    name: "Jane Smith",
-    assignment1: 5,
-    assignment2: 4,
-    quiz1: 5,
-    quiz2: 5,
-    mid: 28,
-    final: 48,
-  },
-  {
-    id: 3,
-    name: "Michael Johnson",
-    assignment1: 3,
-    assignment2: 3,
-    quiz1: 4,
-    quiz2: 3,
-    mid: 22,
-    final: 40,
-  },
-]
+
 
 export default function Grades() {
-  const [students, setStudents] = useState(initialStudents)
-  const [searchTerm, setSearchTerm] = useState("")
+  const initStudent = useSelector(store => store.teacher);
+  const student = initStudent.students;
+  const [students, setStudents] = useState(student);
+  const [searchTerm, setSearchTerm] = useState("");
   const {
     register,
     handleSubmit,
@@ -56,11 +28,11 @@ export default function Grades() {
   useGetAllStudents();
 
   // Filter students based on search term
-  const filteredStudents = students.filter((student) => student.name.toLowerCase().includes(searchTerm.toLowerCase()))
+  const filteredStudents = students.filter((student) => student.name.toLowerCase().includes(searchTerm.toLowerCase()));
 
   // Handle form submission
   const onSubmit = () => {
-    console.log("Saved student data:", students)
+    console.log("Saved student data:", students);
     // Here you would typically send the data to a server
   }
 
@@ -101,9 +73,9 @@ export default function Grades() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filteredStudents.map((student) => (
+              {filteredStudents.map((student,index) => (
                 <TableRow key={student.id}>
-                  <TableCell className="font-medium">{student.id}</TableCell>
+                  <TableCell className="font-medium">{index + 1}</TableCell>
                   <TableCell>{student.name}</TableCell>
                   <TableCell>
                     <Input
