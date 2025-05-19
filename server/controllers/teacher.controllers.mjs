@@ -6,7 +6,12 @@ import User from "../models/User.mjs";
 export const getAllStudents = async (req, res) => {
   try {
     const teacher = await User.findById(req.user.id);
-    if (!teacher.class) return res.status(400).json({ message: 'No class assigned' });
+    if (!teacher.class) return res.status(400).json(
+      { 
+        message: 'No class assigned',
+        success : false
+       }
+    );
 
     const students = await User.find({ 
       class: teacher.class, 
