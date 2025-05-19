@@ -1,6 +1,7 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import authSlice from './Slices/authSlice';
 import adminSlice from './Slices/adminSlice'
+import teacherSlice from './Slices/teacherSlice'
 import {
   persistStore,
   persistReducer,
@@ -20,7 +21,8 @@ const persistConfig = {
 
 const rootReducer = combineReducers({
   auth : authSlice,
-  admin : adminSlice
+  admin : adminSlice,
+  teacher : teacherSlice
 })
 
 const persistedReducer = persistReducer(persistConfig, rootReducer)

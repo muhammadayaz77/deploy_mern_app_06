@@ -53,7 +53,7 @@ export default function Grades() {
   } = useForm()
 
   // get all students
-  useGetAllStudents()
+  useGetAllStudents();
 
   // Filter students based on search term
   const filteredStudents = students.filter((student) => student.name.toLowerCase().includes(searchTerm.toLowerCase()))
