@@ -3,26 +3,12 @@ import {auth} from '../middleware/auth.middleware.mjs'
 import {roleAuth} from '../middleware/auth.middleware.mjs'
 import User from '../models/User.mjs'
 import Marks from '../models/Marks.mjs'
+import { getAllStudents } from '../controllers/teacher.controllers.mjs'
 
 const router = express.Router()
 
 // Teacher: Get students in their class
-router.get('/students', auth, roleAuth(['teacher']), async (req, res) => {
-  try {
-    const teacher = await User.findById(req.user.id);
-    if (!teacher.class) return res.status(400).json({ message: 'No class assigned' });
-
-    const students = await User.find({ 
-      class: teacher.class, 
-      role: 'student' 
-    }).select('name email gradeLevel section courses');
-
-    res.json(students);
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send('Server error');
-  }
-});
+router.get('/students', auth, roleAuth(['teacher']), getAllStudents);
 
 // Teacher: Add marks for student
 router.post('/marks', auth, roleAuth(['teacher']), async (req, res) => {
