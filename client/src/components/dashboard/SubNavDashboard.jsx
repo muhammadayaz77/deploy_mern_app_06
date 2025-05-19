@@ -21,7 +21,7 @@ function SubNavDashboard() {
         currentPath === '/sup-admin/create-admin' ? 
         <span className='primary-text'>Create Admin</span>
         :
-        currentPath === '/sup-admin/credentials/change' || currentPath === '/admin/credentials/change' ? 
+        currentPath === '/sup-admin/credentials/change' || currentPath === '/admin/credentials/change' || currentPath === '/teacher/credentials/change' ? 
         <span className='primary-text'>Change Password</span>
         : currentPath === "/sup-admin/manage-admin" ? 
         <span className='primary-text'>Manage admins</span>

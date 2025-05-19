@@ -5,6 +5,7 @@ import Home from './Home/index'
 import StudentDashboard from './Dashboard/Student/index'
 import SuperAdminDashboard from './Dashboard/Super Admin/index'
 import AdminDashboard from './Dashboard/Admins/index'
+import TeacherDashboard from './Dashboard/Teacher'
 function Index() {
   return (
     <>
@@ -15,6 +16,7 @@ function Index() {
       <Route path='/student/*' element={<StudentDashboard />} />
       <Route path='/sup-admin/*' element={<SuperAdminDashboard />} />
       <Route path='/admin/*' element={<AdminDashboard />} />
+      <Route path='/teacher/*' element={<TeacherDashboard />} />
       {/* <Route path='/*' element={<Dashboard />} /> */}
     </Routes>
     </BrowserRouter>

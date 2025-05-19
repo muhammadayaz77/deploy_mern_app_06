@@ -1,0 +1,22 @@
+import { Route, Routes } from "react-router-dom"
+import Layout from "../../../components/dashboard/layout"
+import ChangePassword from "../ChangePassword"
+import Assign from "./Assign"
+
+
+function Index() {
+  return (
+    <>
+    {/* <SubNavDashboard /> */}
+    <Routes>
+      <Route path="/" element={<Layout />}>
+        <Route path="/add-marks/" element={<>add marks</>} />
+        <Route path="/credentials/change" element={<ChangePassword />} />
+        {/* Add more routes as needed */}
+      </Route>
+    </Routes>
+    </>
+  )
+}
+
+export default Index
