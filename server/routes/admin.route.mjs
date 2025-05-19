@@ -3,38 +3,18 @@ import { auth } from '../middleware/auth.middleware.mjs'
 import { roleAuth } from '../middleware/auth.middleware.mjs'
 import User from '../models/User.mjs'
 import Class from '../models/Class.mjs'
+import { assignTeacher, getTeachersAndClasses } from '../controllers/admin.controllers.mjs'
 
 let router = express.Router();
 
 // Admin1: Assign teacher to class
-router.post('/assign-teacher', auth, roleAuth(['admin1']), async (req, res) => {
-  try {
-    const { classId, teacherId } = req.body;
+router.post('/assign-teacher', auth, roleAuth(['admin1']), assignTeacher);
 
-    // Check if teacher exists
-    const teacher = await User.findOne({ _id: teacherId, role: 'teacher' });
-    if (!teacher) return res.status(404).json({ message: 'Teacher not found' });
+// admin1 : Get Teacher and Classes
+router.get('/get-teacher-classes', auth, roleAuth(['admin1']), getTeachersAndClasses);
 
-    // Update class with new teacher
-    const updatedClass = await Class.findByIdAndUpdate(
-      classId,
-      { teacher: teacherId },
-      { new: true }
-    ).populate('teacher students');
-
-    // Update teacher's class reference
-    teacher.class = classId;
-    await teacher.save();
-
-    res.json(updatedClass);
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send('Server error');
-  }
-});
-
-// Admin2: Remove teacher from class
-router.post('/remove-teacher', auth, roleAuth(['admin2']), async (req, res) => {
+// Admin1: Remove teacher from class
+router.post('/remove-teacher', auth, roleAuth(['admin1']), async (req, res) => {
   try {
     const { classId } = req.body;
 
@@ -66,4 +46,4 @@ router.get('/classes', auth, roleAuth(['admin2']), async (req, res) => {
   }
 });
 
-export default router
+export default router;

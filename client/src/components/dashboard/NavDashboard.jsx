@@ -26,16 +26,16 @@ function NavDashboard({ toggleSidebar, sidebarOpen }) {
   const navigate = useNavigate();
   const logout = useLogout();
   const dispatch = useDispatch();
-  let {user} = useSelector(store => store.auth)
+  let {user} = useSelector(store => store.auth) || {}
   const [isLoggingOut, setIsLoggingOut] = React.useState(false);
 
   const handleLogout = () => {
     setIsLoggingOut(true);
     logout()
       .then((res) => {
-        console.log("Logout successful:", res.data);
+        // console.log("Logout successful:", res.data);
         dispatch(setLogout());
-        dispatch(setRemoveData())
+        dispatch(setRemoveData());
         window.toastify(res.data.message,'success');
         navigate("/web/login");
       })
@@ -78,8 +78,8 @@ function NavDashboard({ toggleSidebar, sidebarOpen }) {
 
         <h1 className="text-lg font-semibold">
           {
-            user.role === 'student' ? 'Student ' : user.role === 'sup_admin' ? "Super Admin " :
-            user.role === 'admin1' ? "Admin no. 1 " :  user.role === 'admin1' ? "Admin no. 2 " : ''
+            user?.role === 'student' ? 'Student ' : user?.role === 'sup_admin' ? "Super Admin " :
+            user?.role === 'admin1' ? "Admin no. 1 " :  user?.role === 'admin1' ? "Admin no. 2 " : ''
           } 
           Dashboard</h1>
       </div>

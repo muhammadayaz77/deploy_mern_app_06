@@ -32,7 +32,6 @@
     const navigate = useNavigate(null)
 
     const onSubmit = async (data) => {
-      console.log('Form data:', data);
       setIsLoading(true);
       await axios.post(REGISTER_API_ENDPOINT,data,{
         headers : {
@@ -41,7 +40,6 @@
         withCredentials : true
       })
       .then(res => {
-        console.log('creaete res : ',res);
         window.toastify(res.data.message,'success')
         dispatch(setAddAdmin(res.data.data));
         navigate('/sup-admin/manage-admin')
@@ -72,6 +70,7 @@
               <input
                 id="username"
                 type="text"
+                autoComplete='current-password'
                 {...register('name', { required: 'Username is required' })}
                 className={`bg-gray-50 border border-l-0 text-gray-900 focus:ring-2 focus:ring-transparent block flex-1 min-w-0 w-full text-sm border-gray-300 p-2.5 rounded-r-lg dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-transparent focus:outline-none ${
                   errors.name ? 'border-red-500' : ''

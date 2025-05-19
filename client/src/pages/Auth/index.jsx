@@ -9,7 +9,11 @@ function index() {
     <div className="">
     <Navbar />
     <Routes>
+      {/* <Route path="/protected" element={<><h1 className="mt-10 text-black">protected</h1></>}/> */}
       <Route path="/login" element={<Login />} />
+      {/* <Route path="/*" element={<>page not found</>} /> */}
+      
+
       {/* <Route path="/login" element={<Login />} /> */}
     </Routes>
     <Footer />

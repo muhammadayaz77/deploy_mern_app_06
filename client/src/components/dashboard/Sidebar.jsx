@@ -28,11 +28,11 @@ function Sidebar({sidebarOpen}) {
     setIsLoggingOut(true);
     logout()
       .then((res) => {
-        console.log("Logout successful:", res.data);
-        window.toastify(res.data.message,'success');
-        dispatch(setRemoveData())
+        // console.log("Logout successful:", res.data);
+        dispatch(setRemoveData());
         dispatch(setLogout());
         navigate("/web/login");
+        window.toastify(res.data.message,'success');
       })
       .catch((err) => {
         console.error("Logout failed:", err);

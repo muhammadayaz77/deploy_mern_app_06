@@ -23,7 +23,6 @@ function LoginForm() {
         withCredentials : true
       })
       .then(res => {
-        console.log("res : ",res)
         dispatch(setUser(res.data))
         window.toastify(res?.data?.message || 'You are logged in','success')
         navigate('/student/dashboard')

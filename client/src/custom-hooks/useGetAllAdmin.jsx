@@ -26,7 +26,7 @@ function useGetAllAdmin() {
         
         if (response.data.success) {
           dispatch(setAllAdmin(response.data.data))
-          console.log('get admins res : ',response);
+          // console.log('get admins res : ',response);
         } else {
           setError(new Error(response.data.message || 'Failed to fetch admins'));
           console.log(response)

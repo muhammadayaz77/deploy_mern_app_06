@@ -23,6 +23,8 @@ function SubNavDashboard() {
         :
         currentPath === '/sup-admin/credentials/change' ? 
         <span className='primary-text'>Change Password</span>
+        : currentPath === "/sup-admin/manage-admin" ? 
+        <span className='primary-text'>Manage admins</span>
         : ''
       }
     </div>
