@@ -1,6 +1,7 @@
 import { Route, Routes } from "react-router-dom"
 import Layout from "../../../components/dashboard/layout"
 import ChangePassword from "../ChangePassword"
+import Assign from "./Assign"
 
 
 function Index() {
@@ -9,7 +10,7 @@ function Index() {
     {/* <SubNavDashboard /> */}
     <Routes>
       <Route path="/" element={<Layout />}>
-        <Route path="/assign-class/" element={<>assign</>} />
+        <Route path="/assign-class/" element={<Assign />} />
         <Route path="/credentials/change" element={<ChangePassword />} />
         {/* Add more routes as needed */}
       </Route>

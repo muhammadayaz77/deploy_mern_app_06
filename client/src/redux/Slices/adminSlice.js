@@ -2,6 +2,8 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
   user: [],
+  teachers : [],
+  classes : [],
 };
 
 const adminSlice = createSlice({
@@ -19,11 +21,16 @@ const adminSlice = createSlice({
       state.user = [];
     },
     setAddAdmin : (state,action) => {
-
       state.user.push(action.payload)
-    }
+    },
+    setAllTeachers : (state,action) => {
+      state.teachers = action.payload;
+    },
+    setAllClasses : (state,action) => {
+      state.classes = action.payload;
+    },
   },
 });
 
-export const { setAllAdmin,setRemoveAdmin,setRemoveData,setAddAdmin } = adminSlice.actions;
+export const { setAllAdmin,setRemoveAdmin,setRemoveData,setAddAdmin,setAllTeachers,setAllClasses } = adminSlice.actions;
 export default adminSlice.reducer;
