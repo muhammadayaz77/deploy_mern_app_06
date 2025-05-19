@@ -17,6 +17,7 @@ function Index() {
       <Route path='/sup-admin/*' element={<SuperAdminDashboard />} />
       <Route path='/admin/*' element={<AdminDashboard />} />
       <Route path='/teacher/*' element={<TeacherDashboard />} />
+      <Route path='/*' element={<>no page Found</>} />
       {/* <Route path='/*' element={<Dashboard />} /> */}
     </Routes>
     </BrowserRouter>
