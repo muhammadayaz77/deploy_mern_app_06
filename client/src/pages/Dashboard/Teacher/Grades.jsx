@@ -4,6 +4,8 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { useSelector } from "react-redux"
+import axios from "axios"
+import { ADD_MARKS_API_ENDPOINT } from "../../../utils/constants"
 
 export default function Grades() {
   const initStudent = useSelector((store) => store.teacher)
@@ -68,14 +70,14 @@ export default function Grades() {
   const onSubmit = async () => {
     setIsLoading(true)
     try {
-      console.log("All Student Grades:", students)
-      await new Promise((resolve) => setTimeout(resolve, 1500))
-      window.toastify("Grades saved successfully", "success")
+      console.log("All Student Grades:", students);
+      await axios.post(ADD_MARKS_API_ENDPOINT,{students})
+      window.toastify("Grades saved successfully", "success");
     } catch (error) {
-      console.error("Error saving grades:", error)
-      window.toastify("Error saving grades", "error")
+      console.error("Error saving grades:", error);
+      window.toastify("Error saving grades", "error");
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
   }
 

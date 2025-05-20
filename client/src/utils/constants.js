@@ -10,3 +10,4 @@ export const REMOVE_ADMIN_API_ENDPOINT='http://localhost:5000/api/superadmin/rem
 export const GET_CLASS_TEACHER_API_ENDPOINT='http://localhost:5000/api/admin/get-teacher-classes'
 export const ASSIGN_TEACHER_API_ENDPOINT='http://localhost:5000/api/admin/assign-teacher'
 export const GET_STUDENT_API_ENDPOINT='http://localhost:5000/api/teacher/students'
+export const ADD_MARKS_API_ENDPOINT='http://localhost:5000/api/teacher/marks/bulk'
