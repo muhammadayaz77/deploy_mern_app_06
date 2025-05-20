@@ -10,7 +10,7 @@ import useGetAllStudents from "../../../custom-hooks/useGetAllStudents"
 
 export default function Grades() {
   const initStudent = useSelector((store) => store.teacher)
-  const student = initStudent.students || []
+  const student = initStudent.students || [];
 
   // Initialize all grades to 0 if undefined
   const initializedStudents = student.map((s) => ({
@@ -37,7 +37,7 @@ export default function Grades() {
   }, [])
 
   // Filter students by search term
-  const filteredStudents = students.filter((student) => student.name.toLowerCase().includes(searchTerm.toLowerCase()))
+  const filteredStudents = student.filter((student) => student.name.toLowerCase().includes(searchTerm.toLowerCase()))
 
   // Update grade for specific student and field
   const updateGrade = (studentId, field, value) => {

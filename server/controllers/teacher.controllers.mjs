@@ -94,7 +94,7 @@ export const saveStudentMarks = async (req, res) => {
 // Controller for bulk saving/updating marks for multiple students
 export const saveBulkMarks = async (req, res) => {
   try {
-    const { students, subject, term } = req.body
+    const { students, subject, term } = req.body;
     const teacher = await User.findById(req.user._id);
 
     if (!Array.isArray(students) || students.length === 0) {
@@ -105,6 +105,8 @@ export const saveBulkMarks = async (req, res) => {
        }
       )
     }
+
+    console.log('class : ',teacher.class);
 
     const results = []
     const errors = []
