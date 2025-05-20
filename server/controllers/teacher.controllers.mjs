@@ -183,7 +183,7 @@ export const getClassMarks = async (req, res) => {
         {
           students : [], 
           message: "You are not assigned to any class",
-        success : true
+          success : true
         })
     }
 
@@ -215,7 +215,10 @@ export const getClassMarks = async (req, res) => {
       }
     })
 
-    res.json(studentsWithMarks)
+    res.status(200).json({
+      students : studentsWithMarks,
+      success : true
+    })
   } catch (err) {
     console.error("Error fetching class marks:", err.message)
     res.status(500).json({ message: "Server error", error: err.message })

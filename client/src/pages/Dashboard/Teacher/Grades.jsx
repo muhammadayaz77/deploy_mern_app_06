@@ -180,7 +180,7 @@ export default function Grades() {
               ) : (
                 <TableRow>
                   <TableCell colSpan={8} className="text-center py-4">
-                    No students found
+                  You are not assigned to any class
                   </TableCell>
                 </TableRow>
               )}
