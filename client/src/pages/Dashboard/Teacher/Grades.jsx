@@ -1,13 +1,13 @@
-import { useState, useEffect } from "react";
-import { Search, Loader2 } from "lucide-react";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { useSelector } from "react-redux";
+import { useState, useEffect } from "react"
+import { Search, Loader2 } from "lucide-react"
+import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { useSelector } from "react-redux"
 
 export default function Grades() {
-  const initStudent = useSelector((store) => store.teacher);
-  const student = initStudent.students || [];
+  const initStudent = useSelector((store) => store.teacher)
+  const student = initStudent.students || []
 
   // Initialize all grades to 0 if undefined
   const initializedStudents = student.map((s) => ({
@@ -18,48 +18,66 @@ export default function Grades() {
     quiz2: s.quiz2 ?? 0,
     mid: s.mid ?? 0,
     final: s.final ?? 0,
-  }));
+  }))
 
-  const [students, setStudents] = useState(initializedStudents);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const [isDataLoading, setIsDataLoading] = useState(false);
+  const [students, setStudents] = useState(initializedStudents)
+  const [searchTerm, setSearchTerm] = useState("")
+  const [isLoading, setIsLoading] = useState(false)
+  const [isDataLoading, setIsDataLoading] = useState(false)
 
   // Simulate data loading
   useEffect(() => {
-    setIsDataLoading(true);
-    setTimeout(() => setIsDataLoading(false), 1000);
-  }, []);
+    setIsDataLoading(true)
+    setTimeout(() => setIsDataLoading(false), 1000)
+  }, [])
 
   // Filter students by search term
-  const filteredStudents = students.filter((student) =>
-    student.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredStudents = students.filter((student) => student.name.toLowerCase().includes(searchTerm.toLowerCase()))
 
   // Update grade for specific student and field
-  const updateGrade = (id, field, value) => {
-    const numValue = value === "" ? 0 : Number(value);
-    setStudents(prevStudents =>
-      prevStudents.map(student =>
-        student.id === id ? { ...student, [field]: numValue } : student
-      )
-    );
-  };
+  const updateGrade = (studentId, field, value) => {
+    // Convert empty string to 0, otherwise parse as number
+    let numValue = value === "" ? 0 : Number.parseInt(value, 10)
+
+    // Apply max constraints based on field type
+    const maxValues = {
+      assignment1: 5,
+      assignment2: 5,
+      quiz1: 5,
+      quiz2: 5,
+      mid: 30,
+      final: 50,
+    }
+
+    // Ensure value doesn't exceed maximum
+    if (numValue > maxValues[field]) {
+      numValue = maxValues[field]
+    }
+
+    // Ensure value is not negative
+    if (numValue < 0) {
+      numValue = 0
+    }
+
+    setStudents((prevStudents) =>
+      prevStudents.map((student) => (student._id === studentId ? { ...student, [field]: numValue } : student)),
+    )
+  }
 
   // Save all grades
   const onSubmit = async () => {
-    setIsLoading(true);
+    setIsLoading(true)
     try {
-      console.log("All Student Grades:", students);
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-      window.toastify("Grades saved successfully", "success");
+      console.log("All Student Grades:", students)
+      await new Promise((resolve) => setTimeout(resolve, 1500))
+      window.toastify("Grades saved successfully", "success")
     } catch (error) {
-      console.error("Error saving grades:", error);
-      window.toastify("Error saving grades", "error");
+      console.error("Error saving grades:", error)
+      window.toastify("Error saving grades", "error")
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  };
+  }
 
   return (
     <div className="space-y-4 lg:p-10 md:p-5 p-3">
@@ -97,43 +115,51 @@ export default function Grades() {
               <TableRow className="bg-muted/50">
                 <TableHead className="w-[80px] font-bold">S.No</TableHead>
                 <TableHead className="font-bold">Name</TableHead>
-                <TableHead className="font-bold">Assignment 1</TableHead>
-                <TableHead className="font-bold">Assignment 2</TableHead>
-                <TableHead className="font-bold">Quiz 1</TableHead>
-                <TableHead className="font-bold">Quiz 2</TableHead>
-                <TableHead className="font-bold">Mid</TableHead>
-                <TableHead className="font-bold">Final</TableHead>
+                <TableHead className="font-bold">Assignment 1 (0-5)</TableHead>
+                <TableHead className="font-bold">Assignment 2 (0-5)</TableHead>
+                <TableHead className="font-bold">Quiz 1 (0-5)</TableHead>
+                <TableHead className="font-bold">Quiz 2 (0-5)</TableHead>
+                <TableHead className="font-bold">Mid (0-30)</TableHead>
+                <TableHead className="font-bold">Final (0-50)</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {filteredStudents.length > 0 ? (
                 filteredStudents.map((student, index) => (
-                  <TableRow key={student.id}>
+                  <TableRow key={student._id}>
                     <TableCell className="font-medium">{index + 1}</TableCell>
                     <TableCell>{student.name}</TableCell>
-                    {["assignment1", "assignment2", "quiz1", "quiz2", "mid", "final"].map((field) => (
-                      <TableCell key={`${student.id}-${field}`}>
-                        <Input
-                          type="number"
-                          className="w-16 h-8"
-                          min={0}
-                          max={
-                            field.includes("assignment") || field.includes("quiz") 
-                              ? 5 
-                              : field === "mid" 
-                                ? 30 
-                                : 50
-                          }
-                          value={student[field]}
-                          onChange={(e) => updateGrade(student.id, field, e.target.value)}
-                          onBlur={(e) => {
-                            if (e.target.value === "") {
-                              updateGrade(student.id, field, "0");
-                            }
-                          }}
-                        />
-                      </TableCell>
-                    ))}
+                    {["assignment1", "assignment2", "quiz1", "quiz2", "mid", "final"].map((field) => {
+                      // Define max value based on field type
+                      const maxValue =
+                        field.includes("assignment") || field.includes("quiz") ? 5 : field === "mid" ? 30 : 50
+
+                      return (
+                        <TableCell key={`${student._id}-${field}`}>
+                          <Input
+                            type="number"
+                            className="w-16 h-8"
+                            min={0}
+                            max={maxValue}
+                            value={student[field]}
+                            onChange={(e) => updateGrade(student._id, field, e.target.value)}
+                            onBlur={(e) => {
+                              const value = e.target.value
+                              if (value === "") {
+                                updateGrade(student._id, field, "0")
+                              } else {
+                                const numValue = Number.parseInt(value, 10)
+                                if (numValue > maxValue) {
+                                  updateGrade(student._id, field, maxValue.toString())
+                                } else if (numValue < 0) {
+                                  updateGrade(student._id, field, "0")
+                                }
+                              }
+                            }}
+                          />
+                        </TableCell>
+                      )
+                    })}
                   </TableRow>
                 ))
               ) : (
@@ -148,5 +174,5 @@ export default function Grades() {
         </div>
       )}
     </div>
-  );
+  )
 }
