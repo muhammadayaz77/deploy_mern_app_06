@@ -1,4 +1,4 @@
-import React, { useReducer } from "react";
+import React from "react";
 import { ChevronLeft } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
@@ -20,7 +20,7 @@ import { Link, useNavigate } from "react-router-dom";
 import useLogout from '../../custom-hooks/useLogout'
 import { useDispatch, useSelector } from "react-redux";
 import { setLogout } from "../../redux/Slices/authSlice";
-import { setRemoveData } from "../../redux/Slices/adminSlice";
+import { setAllStudents, setRemoveAllStudents } from "../../redux/Slices/teacherSlice";
 
 function NavDashboard({ toggleSidebar, sidebarOpen }) {
   const navigate = useNavigate();
@@ -35,7 +35,9 @@ function NavDashboard({ toggleSidebar, sidebarOpen }) {
       .then((res) => {
         // console.log("Logout successful:", res.data);
         dispatch(setLogout());
-        dispatch(setRemoveData());
+        dispatch(setRemoveAllStudents());
+        dispatch(setAllStudents());
+        dispatch({ type: 'RESET_APP' });
         window.toastify(res.data.message,'success');
         navigate("/web/login");
       })

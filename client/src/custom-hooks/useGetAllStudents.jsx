@@ -27,13 +27,15 @@ function useGetAllStudents() {
         });
         
         if (response.data.success) {
-          console.log(response)
-          dispatch(setAllStudents(response.data.students))
+          console.log(response);
+          
+          dispatch(setAllStudents(response.data.students));
+          
           // dispatch(setAllClasses(response.data.data.classes))
-          // console.log('get admins res : ',response);
+          console.log('get admins res : ',response);
         } else {
           setError(new Error(response.data.message || 'Failed to fetch admins'));
-          console.log(response);
+          console.log('err res : ',response);
         }
       } catch (err) {
         if (!axios.isCancel(err)) {

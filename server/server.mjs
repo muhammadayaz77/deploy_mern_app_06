@@ -41,7 +41,7 @@ app.use('/api/marks', marks);
 app.use('/ping',async(req,res) => {
   await User.deleteMany({role:'admin1'}).then(r => res.send(r))
   // res.send('pong');
-})
+});
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

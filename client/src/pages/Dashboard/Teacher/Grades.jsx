@@ -6,6 +6,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { useSelector } from "react-redux"
 import axios from "axios"
 import { ADD_MARKS_API_ENDPOINT } from "../../../utils/constants"
+import useGetAllStudents from "../../../custom-hooks/useGetAllStudents"
 
 export default function Grades() {
   const initStudent = useSelector((store) => store.teacher)
@@ -25,7 +26,9 @@ export default function Grades() {
   const [students, setStudents] = useState(initializedStudents)
   const [searchTerm, setSearchTerm] = useState("")
   const [isLoading, setIsLoading] = useState(false)
-  const [isDataLoading, setIsDataLoading] = useState(false)
+  const [isDataLoading, setIsDataLoading] = useState(false);
+
+  useGetAllStudents()
 
   // Simulate data loading
   useEffect(() => {
@@ -71,8 +74,18 @@ export default function Grades() {
     setIsLoading(true)
     try {
       console.log("All Student Grades:", students);
-      await axios.post(ADD_MARKS_API_ENDPOINT,{students})
-      window.toastify("Grades saved successfully", "success");
+      await axios.post(ADD_MARKS_API_ENDPOINT,{students, subject:'Mathematics',term:'current'},{
+        headers : {
+          'Content-Type' : 'application/json'
+        },
+        withCredentials : true
+      })
+      .then(res => {
+        window.toastify(res.data.message, "success");
+      })
+      .catch(err => {
+        window.toastify("Internal Server Error", "err");
+      })
     } catch (error) {
       console.error("Error saving grades:", error);
       window.toastify("Error saving grades", "error");

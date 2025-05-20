@@ -1,5 +1,6 @@
-import User from "../models/User.js"
-import Marks from "../models/Marks.js"
+
+import Marks from "../models/Marks.mjs";
+import User from "../models/User.mjs";
 
 
 export const getAllStudents = async (req, res) => {
@@ -94,7 +95,7 @@ export const saveStudentMarks = async (req, res) => {
 export const saveBulkMarks = async (req, res) => {
   try {
     const { students, subject, term } = req.body
-    const teacher = await User.findById(req.user._id)
+    const teacher = await User.findById(req.user._id);
 
     if (!Array.isArray(students) || students.length === 0) {
       return res.status(400).json(
@@ -111,7 +112,7 @@ export const saveBulkMarks = async (req, res) => {
     // Process each student's marks
     for (const studentData of students) {
       try {
-        const { _id, assignment1, assignment2, quiz1, quiz2, mid, final, remarks } = studentData
+        const { _id, assignment1, assignment2, quiz1, quiz2, mid, final } = studentData
 
         // Verify student exists and belongs to teacher's class
         const student = await User.findOne({
@@ -122,7 +123,7 @@ export const saveBulkMarks = async (req, res) => {
 
         if (!student) {
           errors.push({ studentId: _id, error: "Student not found in your class" })
-          continue
+          continue;
         }
 
         // Find existing record or create new one (upsert)
@@ -141,8 +142,8 @@ export const saveBulkMarks = async (req, res) => {
               quiz2: quiz2 || 0,
               mid: mid || 0,
               final: final || 0,
-              remarks: remarks || "",
-              submittedBy: req.user.id,
+              remarks: "",
+              submittedBy: req.user._id,
               status: "submitted",
             },
           },
@@ -150,15 +151,16 @@ export const saveBulkMarks = async (req, res) => {
             new: true,
             upsert: true,
           },
-        )
+        );
 
-        results.push(updatedMarks)
+        results.push(updatedMarks);
+        console.log("results : ",results)
+
       } catch (studentError) {
         console.error(`Error processing student ${studentData._id}:`, studentError)
         errors.push({ studentId: studentData._id, error: studentError.message })
       }
     }
-
     res.status(200).json({
       success: true,
       message: `Successfully processed ${results.length} students' marks`,
@@ -174,11 +176,15 @@ export const saveBulkMarks = async (req, res) => {
 // Controller to get marks for students in a class
 export const getClassMarks = async (req, res) => {
   try {
-    const { subject, term } = req.query
     const teacher = await User.findById(req.user.id)
 
     if (!teacher.class) {
-      return res.status(400).json({ message: "You are not assigned to any class" })
+      return res.json(
+        {
+          students : [], 
+          message: "You are not assigned to any class",
+        success : true
+        })
     }
 
     // Get all students in the class
@@ -190,13 +196,11 @@ export const getClassMarks = async (req, res) => {
     // Get existing marks records
     const existingMarks = await Marks.find({
       class: teacher.class,
-      subject,
-      term,
     })
 
     // Map marks to students
     const studentsWithMarks = students.map((student) => {
-      const studentMarks = existingMarks.find((mark) => mark.student.toString() === student._id.toString())
+      const studentMarks = existingMarks.find((mark) => mark.student.toString() === student._id.toString());
 
       return {
         _id: student._id,
