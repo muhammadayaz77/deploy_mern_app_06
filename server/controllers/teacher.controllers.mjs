@@ -226,3 +226,38 @@ export const getClassMarks = async (req, res) => {
     res.status(500).json({ message: "Server error", error: err.message })
   }
 }
+
+export const getClassStudents = async (req, res) => {
+  try {
+    // 1. Get the teacher's details
+    const teacher = await User.findById(req.user.id);
+    
+    // 2. Check if the teacher is assigned to a class
+    if (!teacher.class) {
+      return res.status(200).json({
+        students: [],
+        message: "You are not assigned to any class",
+        success: true
+      });
+    }
+
+    // 3. Fetch students in the teacher's class (only basic info)
+    const students = await User.find({
+      role: "student",
+      class: teacher.class 
+    }).select("_id name email"); // Customize fields as needed
+
+    res.status(200).json({
+      students,
+      success: true
+    });
+
+  } catch (err) {
+    console.error("Error fetching class students:", err.message);
+    res.status(500).json({ 
+      message: "Server error", 
+      error: err.message,
+      success: false 
+    });
+  }
+};
