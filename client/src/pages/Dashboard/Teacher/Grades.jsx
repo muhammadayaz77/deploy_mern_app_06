@@ -1,50 +1,54 @@
-import { useState, useEffect } from "react"
-import { Search, Loader2 } from "lucide-react"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { useSelector } from "react-redux"
-import axios from "axios"
-import { ADD_MARKS_API_ENDPOINT } from "../../../utils/constants"
-import useGetAllStudents from "../../../custom-hooks/useGetAllStudents"
+import { useState, useEffect } from "react";
+import { Search, Loader2 } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { useSelector } from "react-redux";
+import axios from "axios";
+import { ADD_MARKS_API_ENDPOINT } from "../../../utils/constants";
+import useGetAllStudents from "../../../custom-hooks/useGetAllStudents";
 
 export default function Grades() {
-  const initStudent = useSelector((store) => store.teacher)
+  const initStudent = useSelector((store) => store.teacher);
   const student = initStudent.students || [];
+  
+  // Validate grade value
+  const validateGrade = (value, max) => {
+    if (value === undefined || value === null) return 0;
+    const numValue = Number(value);
+    if (isNaN(numValue)) return 0;
+    return Math.min(Math.max(numValue, 0), max);
+  };
+  // Initialize all grades with proper validation
+  const initializeStudents = (students) => {
+    return students.map((s) => ({
+      ...s,
+      assignment1: validateGrade(s.assignment1, 5) || 0,
+      assignment2: validateGrade(s.assignment2, 5) || 0,
+      quiz1: validateGrade(s.quiz1, 5) || 0,
+      quiz2: validateGrade(s.quiz2, 5) || 0,
+      mid: validateGrade(s.mid, 30) || 0,
+      final: validateGrade(s.final, 50) || 0,
+    }));
+  };
+  
 
-  // Initialize all grades to 0 if undefined
-  const initializedStudents = student.map((s) => ({
-    ...s,
-    assignment1: s.assignment1 ?? 0,
-    assignment2: s.assignment2 ?? 0,
-    quiz1: s.quiz1 ?? 0,
-    quiz2: s.quiz2 ?? 0,
-    mid: s.mid ?? 0,
-    final: s.final ?? 0,
-  }))
-
-  const [students, setStudents] = useState(initializedStudents)
-  const [searchTerm, setSearchTerm] = useState("")
-  const [isLoading, setIsLoading] = useState(false)
+  const [students, setStudents] = useState(initializeStudents(student));
+  const [searchTerm, setSearchTerm] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const [isDataLoading, setIsDataLoading] = useState(false);
+  const [errors, setErrors] = useState({});
 
-  useGetAllStudents()
+  useGetAllStudents();
 
-  // Simulate data loading
-  useEffect(() => {
-    setIsDataLoading(true)
-    setTimeout(() => setIsDataLoading(false), 1000)
-  }, [])
 
   // Filter students by search term
-  const filteredStudents = student.filter((student) => student.name.toLowerCase().includes(searchTerm.toLowerCase()))
+  const filteredStudents = students.filter((student) =>
+    student.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
-  // Update grade for specific student and field
+  // Update grade with validation
   const updateGrade = (studentId, field, value) => {
-    // Convert empty string to 0, otherwise parse as number
-    let numValue = value === "" ? 0 : Number.parseInt(value, 10)
-
-    // Apply max constraints based on field type
     const maxValues = {
       assignment1: 5,
       assignment2: 5,
@@ -52,47 +56,103 @@ export default function Grades() {
       quiz2: 5,
       mid: 30,
       final: 50,
+    };
+
+    let numValue = value === "" ? 0 : Number(value);
+    
+    // Validate input
+    if (isNaN(numValue)) {
+      setErrors((prev) => ({
+        ...prev,
+        [studentId]: { ...prev[studentId], [field]: "Must be a number" },
+      }));
+      return;
     }
 
-    // Ensure value doesn't exceed maximum
-    if (numValue > maxValues[field]) {
-      numValue = maxValues[field]
-    }
+    // Apply constraints
+    numValue = Math.min(Math.max(numValue, 0), maxValues[field]);
 
-    // Ensure value is not negative
-    if (numValue < 0) {
-      numValue = 0
-    }
+    setErrors((prev) => {
+      const newErrors = { ...prev };
+      if (newErrors[studentId]) {
+        delete newErrors[studentId][field];
+        if (Object.keys(newErrors[studentId]).length === 0) {
+          delete newErrors[studentId];
+        }
+      }
+      return newErrors;
+    });
 
     setStudents((prevStudents) =>
-      prevStudents.map((student) => (student._id === studentId ? { ...student, [field]: numValue } : student)),
-    )
-  }
+      prevStudents.map((student) =>
+        student._id === studentId ? { ...student, [field]: numValue } : student
+      )
+    );
+  };
+
+  // Handle input blur with validation
+  const handleBlur = (studentId, field, value, max) => {
+    if (value === "") {
+      updateGrade(studentId, field, "0");
+      return;
+    }
+
+    const numValue = Number(value);
+    if (isNaN(numValue)) {
+      updateGrade(studentId, field, "0");
+      return;
+    }
+
+    if (numValue > max) {
+      updateGrade(studentId, field, max.toString());
+    } else if (numValue < 0) {
+      updateGrade(studentId, field, "0");
+    }
+  };
 
   // Save all grades
   const onSubmit = async () => {
-    setIsLoading(true)
+    setIsLoading(true);
     try {
-      console.log("All Student Grades:", students);
-      await axios.post(ADD_MARKS_API_ENDPOINT,{students, subject:'Mathematics',term:'current'},{
-        headers : {
-          'Content-Type' : 'application/json'
-        },
-        withCredentials : true
-      })
-      .then(res => {
-        window.toastify(res.data.message, "success");
-      })
-      .catch(err => {
-        window.toastify("Internal Server Error", "err");
-      })
+      console.log("Students Data : ",students);
+      // const response = await axios.post(
+      //   ADD_MARKS_API_ENDPOINT,
+      //   {
+      //     students,
+      //     subject: "Mathematics",
+      //     term: "current",
+      //   },
+      //   {
+      //     headers: {
+      //       "Content-Type": "application/json",
+      //     },
+      //     withCredentials: true,
+      //   }
+      // );
+
+      // if (response.data.errors && response.data.errors.length > 0) {
+      //   const newErrors = {};
+      //   response.data.errors.forEach((error) => {
+      //     newErrors[error.studentId] = {
+      //       ...newErrors[error.studentId],
+      //       general: error.error,
+      //     };
+      //   });
+      //   setErrors(newErrors);
+      //   window.toastify("Some students couldn't be saved", "warning");
+      // } else {
+      //   window.toastify(response.data.message, "success");
+      // }
     } catch (error) {
       console.error("Error saving grades:", error);
-      window.toastify("Error saving grades", "error");
+      window.toastify(
+        error.response?.data?.message || "Error saving grades",
+        "error"
+      );
     } finally {
       setIsLoading(false);
     }
-  }
+  };
 
   return (
     <div className="space-y-4 lg:p-10 md:p-5 p-3">
@@ -140,47 +200,66 @@ export default function Grades() {
             </TableHeader>
             <TableBody>
               {filteredStudents.length > 0 ? (
-                filteredStudents.map((student, index) => (
-                  <TableRow key={student._id}>
-                    <TableCell className="font-medium">{index + 1}</TableCell>
-                    <TableCell>{student.name}</TableCell>
-                    {["assignment1", "assignment2", "quiz1", "quiz2", "mid", "final"].map((field) => {
-                      // Define max value based on field type
-                      const maxValue =
-                        field.includes("assignment") || field.includes("quiz") ? 5 : field === "mid" ? 30 : 50
+                filteredStudents.map((student, index) => {
+                  const studentError = errors[student._id];
+                  return (
+                    <TableRow key={student._id}>
+                      <TableCell className="font-medium">{index + 1}</TableCell>
+                      <TableCell>
+                        {student.name}
+                        {studentError?.general && (
+                          <p className="text-red-500 text-xs mt-1">
+                            {studentError.general}
+                          </p>
+                        )}
+                      </TableCell>
+                      {["assignment1", "assignment2", "quiz1", "quiz2", "mid", "final"].map((field) => {
+                        const maxValue =
+                          field.includes("assignment") || field.includes("quiz")
+                            ? 5
+                            : field === "mid"
+                            ? 30
+                            : 50;
 
-                      return (
-                        <TableCell key={`${student._id}-${field}`}>
-                          <Input
-                            type="number"
-                            className="w-16 h-8"
-                            min={0}
-                            max={maxValue}
-                            value={student[field]}
-                            onChange={(e) => updateGrade(student._id, field, e.target.value)}
-                            onBlur={(e) => {
-                              const value = e.target.value
-                              if (value === "") {
-                                updateGrade(student._id, field, "0")
-                              } else {
-                                const numValue = Number.parseInt(value, 10)
-                                if (numValue > maxValue) {
-                                  updateGrade(student._id, field, maxValue.toString())
-                                } else if (numValue < 0) {
-                                  updateGrade(student._id, field, "0")
-                                }
+                        return (
+                          <TableCell key={`${student._id}-${field}`}>
+                            <Input
+                              type="number"
+                              className={`w-16 h-8 ${
+                                studentError?.[field] ? "border-red-500" : ""
+                              }`}
+                              min={0}
+                              max={maxValue}
+                              value={student[field]}
+                              onChange={(e) =>
+                                updateGrade(student._id, field, e.target.value)
                               }
-                            }}
-                          />
-                        </TableCell>
-                      )
-                    })}
-                  </TableRow>
-                ))
+                              onBlur={(e) =>
+                                handleBlur(
+                                  student._id,
+                                  field,
+                                  e.target.value,
+                                  maxValue
+                                )
+                              }
+                            />
+                            {studentError?.[field] && (
+                              <p className="text-red-500 text-xs mt-1">
+                                {studentError[field]}
+                              </p>
+                            )}
+                          </TableCell>
+                        );
+                      })}
+                    </TableRow>
+                  );
+                })
               ) : (
                 <TableRow>
                   <TableCell colSpan={8} className="text-center py-4">
-                  You are not assigned to any class
+                    {student.length === 0
+                      ? "You are not assigned to any class"
+                      : "No students match your search"}
                   </TableCell>
                 </TableRow>
               )}
@@ -189,5 +268,5 @@ export default function Grades() {
         </div>
       )}
     </div>
-  )
+  );
 }
