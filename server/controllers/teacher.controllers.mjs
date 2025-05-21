@@ -95,56 +95,74 @@ export const saveStudentMarks = async (req, res) => {
 export const saveBulkMarks = async (req, res) => {
   try {
     const { students, subject, term } = req.body;
-    const teacher = await User.findById(req.user._id);
-
-    if (!Array.isArray(students) || students.length === 0) {
-      return res.status(400).json(
-      { 
-      message: "Students data is required",
-      success : false
-       }
-      )
+    
+    // 1. Validate teacher exists
+    const teacher = await User.findById(req.user.id);
+    if (!teacher) {
+      return res.status(404).json({
+        message: "Teacher not found",
+        success: false
+      });
     }
 
-    console.log('class : ',teacher.class);
+    // 2. Validate teacher has a class assigned
+    if (!teacher.class) {
+      return res.status(403).json({
+        message: "You are not assigned to any class",
+        success: false
+      });
+    }
 
-    const results = []
-    const errors = []
+    // 3. Validate students data
+    if (!Array.isArray(students) || students.length === 0) {
+      return res.status(400).json({ 
+        message: "Students data is required as a non-empty array",
+        success: false
+      });
+    }
 
-    // Process each student's marks
+    const results = [];
+    const errors = [];
+    const classId = teacher.class; // Store classId to avoid repeated access
+
+    // 4. Get all valid student IDs first (single query)
+    const studentIds = students.map(s => s._id);
+    const validStudents = await User.find({
+      _id: { $in: studentIds },
+      role: "student",
+      class: classId
+    });
+
+    const validStudentMap = new Map(validStudents.map(s => [s._id.toString(), s]));
+
+    // 5. Process marks
     for (const studentData of students) {
       try {
-        const { _id, assignment1, assignment2, quiz1, quiz2, mid, final } = studentData
-
-        // Verify student exists and belongs to teacher's class
-        const student = await User.findOne({
-          _id,
-          role: "student",
-          class: teacher.class,
-        })
-
+        const student = validStudentMap.get(studentData._id.toString());
         if (!student) {
-          errors.push({ studentId: _id, error: "Student not found in your class" })
+          errors.push({
+            studentId: studentData._id,
+            error: "Student not found in your class"
+          });
           continue;
         }
 
-        // Find existing record or create new one (upsert)
         const updatedMarks = await Marks.findOneAndUpdate(
           {
-            student: _id,
+            student: studentData._id,
             subject,
             term,
           },
           {
             $set: {
-              class: teacher.class,
-              assignment1: assignment1 || 0,
-              assignment2: assignment2 || 0,
-              quiz1: quiz1 || 0,
-              quiz2: quiz2 || 0,
-              mid: mid || 0,
-              final: final || 0,
-              remarks: "",
+              class: classId,
+              assignment1: Math.min(Math.max(studentData.assignment1 || 0, 0), 5),
+              assignment2: Math.min(Math.max(studentData.assignment2 || 0, 0), 5),
+              quiz1: Math.min(Math.max(studentData.quiz1 || 0, 0), 5),
+              quiz2: Math.min(Math.max(studentData.quiz2 || 0, 0), 5),
+              mid: Math.min(Math.max(studentData.mid || 0, 0), 30),
+              final: Math.min(Math.max(studentData.final || 0, 0), 50),
+              remarks: studentData.remarks || "",
               submittedBy: req.user._id,
               status: "submitted",
             },
@@ -152,28 +170,35 @@ export const saveBulkMarks = async (req, res) => {
           {
             new: true,
             upsert: true,
-          },
+          }
         );
 
         results.push(updatedMarks);
-        console.log("results : ",results)
-
       } catch (studentError) {
-        console.error(`Error processing student ${studentData._id}:`, studentError)
-        errors.push({ studentId: studentData._id, error: studentError.message })
+        console.error(`Error processing student ${studentData._id}:`, studentError);
+        errors.push({
+          studentId: studentData._id,
+          error: studentError.message
+        });
       }
     }
+
     res.status(200).json({
       success: true,
-      message: `Successfully processed ${results.length} students' marks`,
+      message: `Processed ${results.length} students successfully`,
       results,
       errors: errors.length > 0 ? errors : undefined,
-    })
+    });
+
   } catch (err) {
-    console.error("Bulk marks update error:", err.message)
-    res.status(500).json({ message: "Server error", error: err.message })
+    console.error("Bulk marks update error:", err);
+    res.status(500).json({ 
+      message: "Server error",
+      error: err.message,
+      success: false
+    });
   }
-}
+};
 
 // Controller to get marks for students in a class
 export const getClassMarks = async (req, res) => {

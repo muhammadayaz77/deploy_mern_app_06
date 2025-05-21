@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Search, Loader2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -11,7 +11,7 @@ import useGetAllStudents from "../../../custom-hooks/useGetAllStudents";
 export default function Grades() {
   const initStudent = useSelector((store) => store.teacher);
   const student = initStudent.students || [];
-  
+
   // Validate grade value
   const validateGrade = (value, max) => {
     if (value === undefined || value === null) return 0;
@@ -19,6 +19,7 @@ export default function Grades() {
     if (isNaN(numValue)) return 0;
     return Math.min(Math.max(numValue, 0), max);
   };
+
   // Initialize all grades with proper validation
   const initializeStudents = (students) => {
     return students.map((s) => ({
@@ -31,21 +32,30 @@ export default function Grades() {
       final: validateGrade(s.final, 50) || 0,
     }));
   };
-  
 
-  const [students, setStudents] = useState(initializeStudents(student));
+  const [students, setStudents] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isDataLoading, setIsDataLoading] = useState(false);
   const [errors, setErrors] = useState({});
 
+  // Sync with Redux updates
+  useEffect(() => {
+    if (student.length > 0) {
+      setStudents(initializeStudents(student));
+    } else {
+      setStudents([]);
+    }
+  }, [student]);
+
   useGetAllStudents();
 
-
   // Filter students by search term
-  const filteredStudents = students.filter((student) =>
-    student.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredStudents = useMemo(() => {
+    return students.filter((student) =>
+      student.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  }, [students, searchTerm]);
 
   // Update grade with validation
   const updateGrade = (studentId, field, value) => {
@@ -114,35 +124,34 @@ export default function Grades() {
   const onSubmit = async () => {
     setIsLoading(true);
     try {
-      console.log("Students Data : ",students);
-      // const response = await axios.post(
-      //   ADD_MARKS_API_ENDPOINT,
-      //   {
-      //     students,
-      //     subject: "Mathematics",
-      //     term: "current",
-      //   },
-      //   {
-      //     headers: {
-      //       "Content-Type": "application/json",
-      //     },
-      //     withCredentials: true,
-      //   }
-      // );
+      const response = await axios.post(
+        ADD_MARKS_API_ENDPOINT,
+        {
+          students,
+          subject: "Mathematics",
+          term: "current",
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,
+        }
+      );
 
-      // if (response.data.errors && response.data.errors.length > 0) {
-      //   const newErrors = {};
-      //   response.data.errors.forEach((error) => {
-      //     newErrors[error.studentId] = {
-      //       ...newErrors[error.studentId],
-      //       general: error.error,
-      //     };
-      //   });
-      //   setErrors(newErrors);
-      //   window.toastify("Some students couldn't be saved", "warning");
-      // } else {
-      //   window.toastify(response.data.message, "success");
-      // }
+      if (response.data.errors && response.data.errors.length > 0) {
+        const newErrors = {};
+        response.data.errors.forEach((error) => {
+          newErrors[error.studentId] = {
+            ...newErrors[error.studentId],
+            general: error.error,
+          };
+        });
+        setErrors(newErrors);
+        window.toastify("Some students couldn't be saved", "warning");
+      } else {
+        window.toastify(response.data.message, "success");
+      }
     } catch (error) {
       console.error("Error saving grades:", error);
       window.toastify(
