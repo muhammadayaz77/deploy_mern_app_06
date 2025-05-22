@@ -11,12 +11,16 @@ const userSchema = new mongoose.Schema({
   },
   teacherCode: { type: String }, // Only for teachers
   class: { type: mongoose.Schema.Types.ObjectId, ref: 'Class' }, // For students and teachers
-  gradeLevel: { type: String }, // For students
+  gradeLevel: { 
+    type: Number,
+    enum: [8, 9, 10], // Only allow grades 8, 9, and 10
+    required: function() { return this.role === 'student'; }
+  },
   section: { type: String }, // For students
   courses: [{ type: String }], // For students
   createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }
 }, { timestamps: true });
 
-const User = mongoose.model("User",userSchema);
+const User = mongoose.model("User", userSchema);
 
-export default User
+export default User;
