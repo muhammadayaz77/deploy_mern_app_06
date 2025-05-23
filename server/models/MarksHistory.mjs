@@ -16,5 +16,6 @@ const marksHistorySchema = new mongoose.Schema({
   approvedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
   approvedAt: { type: Date, default: Date.now }
 }, { timestamps: true });
+const MarksHistory = mongoose.model("MarksHistory", marksHistorySchema);
 
-export const MarksHistory = mongoose.model("MarksHistory", marksHistorySchema);
+export default MarksHistory;

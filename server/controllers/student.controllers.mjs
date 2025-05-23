@@ -1,5 +1,5 @@
-import { MarksHistory } from "../models/MarksHistory.mjs";
-import { Notification } from "../models/Notification.mjs";
+import MarksHistory from "../models/MarksHistory.mjs";
+import Notification from "../models/Notification.mjs";
 
 // Get student's marks history
 export const getMarksHistory = async (req, res) => {

@@ -4,6 +4,7 @@ import { roleAuth } from '../middleware/auth.middleware.mjs'
 import User from '../models/User.mjs'
 import Class from '../models/Class.mjs'
 import { assignTeacher, getTeachersAndClasses } from '../controllers/admin.controllers.mjs'
+import { getClassesWithPendingMarks } from '../controllers/admin2.controllers.mjs'
 
 let router = express.Router();
 
@@ -12,6 +13,12 @@ router.post('/assign-teacher', auth, roleAuth(['admin1']), assignTeacher);
 
 // admin1 : Get Teacher and Classes
 router.get('/get-teacher-classes', auth, roleAuth(['admin1']), getTeachersAndClasses);
+
+router.get('/get-submit-marks', auth, roleAuth(['admin2']), getClassesWithPendingMarks);
+
+
+
+
 
 // Admin1: Remove teacher from class
 router.post('/remove-teacher', auth, roleAuth(['admin1']), async (req, res) => {
@@ -32,6 +39,8 @@ router.post('/remove-teacher', auth, roleAuth(['admin1']), async (req, res) => {
   }
 });
 
+
+
 // Admin2: Get all classes with teachers and students
 router.get('/classes', auth, roleAuth(['admin2']), async (req, res) => {
   try {
@@ -45,5 +54,6 @@ router.get('/classes', auth, roleAuth(['admin2']), async (req, res) => {
     res.status(500).send('Server error');
   }
 });
+
 
 export default router;
