@@ -12,10 +12,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { GrUserAdmin } from "react-icons/gr";
 import { Home, User, BookOpen, Calendar, Settings, LogOut } from "lucide-react"
 import { LiaUsersCogSolid } from "react-icons/lia";
-import { setRemoveData } from '../../redux/Slices/adminSlice';
+import { getAllSubmitClass, setRemoveData } from '../../redux/Slices/adminSlice';
 import { setLogout } from '../../redux/Slices/authSlice';
 import { SiGoogleclassroom } from "react-icons/si";
 import { GiUpgrade } from "react-icons/gi";
+import { RiStickyNoteAddLine } from "react-icons/ri";
+
 
 
 
@@ -35,6 +37,7 @@ function Sidebar({sidebarOpen}) {
         // console.log("Logout successful:", res.data);
         dispatch(setRemoveData());
         dispatch(setLogout());
+        dispatch(getAllSubmitClass([]));
         navigate("/web/login");
         window.toastify(res.data.message,'success');
       })
@@ -161,6 +164,24 @@ function Sidebar({sidebarOpen}) {
 
             <GiUpgrade className="h-4 w-4" />
             <span>Add Marks</span>
+          </Link>
+          <Link
+            to="#"
+            className="flex items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-accent"
+          >
+
+            <Settings className="h-4 w-4" />
+            <span>Settings</span>
+          </Link>
+            </> :
+            user.role == 'admin2' ? 
+            <>
+             <Link
+            to="/admin/get/classes"
+            className="flex items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-accent"
+          >
+            <RiStickyNoteAddLine className="h-4 w-4" />
+            <span>Approve Marks</span>
           </Link>
           <Link
             to="#"

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useMemo } from "react"
+import { useState, useMemo } from "react"
 import { Search, Loader2, Check, ChevronDown } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
@@ -14,10 +14,10 @@ export default function SubmitClass() {
 
   // Mock data structure for multiple classes
   const [classes, setClasses] = useState(initData);
-  const [searchTerm, setSearchTerm] = useState("")
-  const [loadingStates, setLoadingStates] = useState({})
-  const [isDataLoading, setIsDataLoading] = useState(false)
-  const [expandedClasses, setExpandedClasses] = useState({})
+  const [searchTerm, setSearchTerm] = useState("");
+  const [loadingStates, setLoadingStates] = useState({});
+  const [isDataLoading, setIsDataLoading] = useState(false);
+  const [expandedClasses, setExpandedClasses] = useState({});
 
   // Sync with Redux updates
   // useEffect(() => {

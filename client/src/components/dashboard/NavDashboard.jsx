@@ -21,6 +21,7 @@ import useLogout from '../../custom-hooks/useLogout'
 import { useDispatch, useSelector } from "react-redux";
 import { setLogout } from "../../redux/Slices/authSlice";
 import { setAllStudents, setRemoveAllStudents } from "../../redux/Slices/teacherSlice";
+import { getAllSubmitClass } from "../../redux/Slices/adminSlice";
 
 function NavDashboard({ toggleSidebar, sidebarOpen }) {
   const navigate = useNavigate();
@@ -37,6 +38,7 @@ function NavDashboard({ toggleSidebar, sidebarOpen }) {
         dispatch(setLogout());
         dispatch(setRemoveAllStudents());
         dispatch(setAllStudents());
+        dispatch(getAllSubmitClass([  ]))
         dispatch({ type: 'RESET_APP' });
         window.toastify(res.data.message,'success');
         navigate("/web/login");
@@ -81,7 +83,7 @@ function NavDashboard({ toggleSidebar, sidebarOpen }) {
         <h1 className="text-lg font-semibold">
           {
             user?.role === 'student' ? 'Student ' : user?.role === 'sup_admin' ? "Super Admin " :
-            user?.role === 'admin1' ? "Admin no. 1 " :  user?.role === 'admin1' ? "Admin no. 2 " : user?.role === 'teacher' ? "Teacher " : ''
+            user?.role === 'admin1' ? "Admin no. 1" :  user?.role === 'admin2' ? "Admin no. 2 " : user?.role === 'teacher' ? "Teacher " : ''
           } 
           Dashboard</h1>
       </div>
