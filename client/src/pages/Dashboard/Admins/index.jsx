@@ -1,7 +1,8 @@
 import { Route, Routes } from "react-router-dom"
 import Layout from "../../../components/dashboard/layout"
-import ChangePassword from "../ChangePassword"
-import Assign from "./Assign"
+import ChangePassword from "./Admin2/SubmitClass"
+import Assign from "./Admin1/Assign"
+import ManageAdmin from "./Admin2/SubmitClass"
 
 
 function Index() {
@@ -12,7 +13,8 @@ function Index() {
       <Route path="/" element={<Layout />}>
         <Route path="/assign-class/" element={<Assign />} />
         <Route path="/credentials/change" element={<ChangePassword />} />
-        {/* Add more routes as needed */}
+        {/* Add admin2 routes */}
+        <Route path="/get/classes" element={<ManageAdmin />} />
       </Route>
     </Routes>
     </>

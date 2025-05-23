@@ -6,10 +6,10 @@ import { Button } from "@/components/ui/button"
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import useGetAllTeachersAndClasses from "../../../custom-hooks/useGetAllTeachersAndClasses"
+import useGetAllTeachersAndClasses from "../../../../custom-hooks/useGetAllTeachersAndClasses"
 import { useSelector } from "react-redux"
 import axios from "axios"
-import { ASSIGN_TEACHER_API_ENDPOINT } from "../../../utils/constants"
+import { ASSIGN_TEACHER_API_ENDPOINT } from "../../../../utils/constants"
 
 
 
