@@ -87,86 +87,99 @@ export const getClassesWithPendingMarks = async (req, res) => {
 };
 
 
-// 2. Approve all marks for a specific class
-
-export const approveClassMarks = async (req, res) => {
+export const approveClassMarksAndArchive = async (req, res) => {
   const session = await mongoose.startSession();
   session.startTransaction();
-  
+
   try {
     const { classId } = req.params;
     const admin2Id = req.user._id;
+    const currentYear = new Date().getFullYear();
+    const nextAcademicYear = `${currentYear}-${currentYear + 1}`;
 
-    // Find all submitted marks for the class
-    const marksToApprove = await Marks.find({ 
-      class: classId, 
-      status: 'submitted' 
-    }).session(session);
-
-    if (marksToApprove.length === 0) {
+    // 1. Verify class exists and has submitted marks
+    const classObj = await Class.findById(classId).session(session);
+    if (!classObj) {
       await session.abortTransaction();
       return res.status(404).json({ 
         success: false, 
-        message: 'No pending marks found for this class' 
+        message: 'Class not found' 
       });
     }
 
-    // Prepare bulk operations
-    const bulkUpdates = [];
-    const historyRecords = [];
-    const notifications = [];
+    const submittedMarks = await Marks.find({
+      class: classId,
+      status: 'submitted'
+    }).session(session);
 
-    for (const mark of marksToApprove) {
-      // 1. Update mark status
-      bulkUpdates.push({
-        updateOne: {
-          filter: { _id: mark._id },
-          update: { $set: { status: 'approved' } }
-        }
-      });
-
-      // 2. Create history record
-      historyRecords.push({
-        originalMark: mark._id,
-        student: mark.student,
-        class: mark.class,
-        subject: mark.subject,
-        assignment1: mark.assignment1,
-        assignment2: mark.assignment2,
-        quiz1: mark.quiz1,
-        quiz2: mark.quiz2,
-        mid: mark.mid,
-        final: mark.final,
-        term: mark.term,
-        academicYear: '2023-2024',
-        approvedBy: admin2Id
-      });
-
-      // 3. Prepare student notification
-      notifications.push({
-        user: mark.student,
-        message: `Your ${mark.subject} marks (Term: ${mark.term}) have been approved`,
-        type: 'marks_approved',
-        relatedData: {
-          subject: mark.subject,
-          term: mark.term
-        }
+    if (submittedMarks.length === 0) {
+      await session.abortTransaction();
+      return res.status(400).json({ 
+        success: false, 
+        message: 'No submitted marks found for this class' 
       });
     }
 
-    // Execute all operations in transaction
-    await Marks.bulkWrite(bulkUpdates, { session });
+    // 2. Move marks to history
+    const historyRecords = submittedMarks.map(mark => ({
+      originalMark: mark._id,
+      student: mark.student,
+      class: mark.class,
+      subject: mark.subject,
+      assignment1: mark.assignment1,
+      assignment2: mark.assignment2,
+      quiz1: mark.quiz1,
+      quiz2: mark.quiz2,
+      mid: mark.mid,
+      final: mark.final,
+      term: mark.term,
+      academicYear: classObj.academicYear,
+      approvedBy: admin2Id
+    }));
+
     await MarksHistory.insertMany(historyRecords, { session });
+
+    // 3. Delete the approved marks from Marks collection
+    await Marks.deleteMany({
+      _id: { $in: submittedMarks.map(m => m._id) }
+    }).session(session);
+
+    // 4. Update class academic year and clear students/teacher
+    await Class.findByIdAndUpdate(
+      classId,
+      {
+        academicYear: nextAcademicYear,
+        $unset: { 
+          students: 1,
+          teacher: 1 
+        }
+      },
+      { session, new: true }
+    );
+
+    // 5. Create notifications for students
+    const notifications = submittedMarks.map(mark => ({
+      user: mark.student,
+      message: `Your marks for ${mark.subject} (${classObj.academicYear}) have been archived`,
+      type: 'marks_archived',
+      relatedData: {
+        subject: mark.subject,
+        academicYear: classObj.academicYear,
+        class: classObj.name
+      }
+    }));
+
     await Notification.insertMany(notifications, { session });
 
     await session.commitTransaction();
 
-    res.status(200).json({ 
+    res.status(200).json({
       success: true,
-      message: `Approved ${marksToApprove.length} marks for this class`,
+      message: `Approved and archived ${submittedMarks.length} marks. Class reset for ${nextAcademicYear}`,
       data: {
-        approvedCount: marksToApprove.length,
-        classId: classId
+        archivedMarksCount: submittedMarks.length,
+        previousAcademicYear: classObj.academicYear,
+        newAcademicYear: nextAcademicYear
       }
     });
 
@@ -174,7 +187,7 @@ export const approveClassMarks = async (req, res) => {
     await session.abortTransaction();
     res.status(500).json({ 
       success: false, 
-      message: 'Approval failed',
+      message: 'Archive operation failed',
       error: err.message 
     });
   } finally {
