@@ -4,6 +4,7 @@ const initialState = {
   user: [],
   teachers : [],
   classes : [],
+  submitClass : [],
 };
 
 const adminSlice = createSlice({
@@ -29,8 +30,12 @@ const adminSlice = createSlice({
     setAllClasses : (state,action) => {
       state.classes = action.payload;
     },
+    getAllSubmitClass : (state,action) => {
+      state.submitClass = action.payload;
+    },
+
   },
 });
 
-export const { setAllAdmin,setRemoveAdmin,setRemoveData,setAddAdmin,setAllTeachers,setAllClasses } = adminSlice.actions;
+export const { setAllAdmin,setRemoveAdmin,setRemoveData,setAddAdmin,setAllTeachers,setAllClasses,getAllSubmitClass } = adminSlice.actions;
 export default adminSlice.reducer;
