@@ -5,6 +5,7 @@ import Marks from "../models/Marks.mjs";
 import MarksHistory from "../models/MarksHistory.mjs";
 import Notification from "../models/Notification.mjs";
 import User from '../models/User.mjs'
+import mongoose from "mongoose";
 
 // 1. Get all classes with submitted marks (organized by class)
 export const getClassesWithPendingMarks = async (req, res) => {
@@ -89,39 +90,35 @@ export const getClassesWithPendingMarks = async (req, res) => {
 
 
 export const approveClassMarksAndArchive = async (req, res) => {
-  const session = await mongoose.startSession();
-  session.startTransaction();
-
   try {
     const { classId } = req.params;
     const admin2Id = req.user._id;
     const currentYear = new Date().getFullYear();
     const nextAcademicYear = `${currentYear}-${currentYear + 1}`;
 
-    // 1. Verify class exists and has submitted marks
-    const classObj = await Class.findById(classId).session(session);
+    // 1. Verify class exists
+    const classObj = await Class.findById(classId);
     if (!classObj) {
-      await session.abortTransaction();
       return res.status(404).json({ 
         success: false, 
         message: 'Class not found' 
       });
     }
 
+    // 2. Get submitted marks
     const submittedMarks = await Marks.find({
       class: classId,
       status: 'submitted'
-    }).session(session);
+    });
 
     if (submittedMarks.length === 0) {
-      await session.abortTransaction();
       return res.status(400).json({ 
         success: false, 
-        message: 'No submitted marks found for this class' 
+        message: 'No submitted marks found' 
       });
     }
 
-    // 2. Move marks to history
+    // 3. Create history records
     const historyRecords = submittedMarks.map(mark => ({
       originalMark: mark._id,
       student: mark.student,
@@ -138,60 +135,47 @@ export const approveClassMarksAndArchive = async (req, res) => {
       approvedBy: admin2Id
     }));
 
-    await MarksHistory.insertMany(historyRecords, { session });
-
-    // 3. Delete the approved marks from Marks collection
-    await Marks.deleteMany({
-      _id: { $in: submittedMarks.map(m => m._id) }
-    }).session(session);
-
-    // 4. Update class academic year and clear students/teacher
-    await Class.findByIdAndUpdate(
+    // 4. Execute operations sequentially
+    await MarksHistory.insertMany(historyRecords);
+    await Marks.deleteMany({ _id: { $in: submittedMarks.map(m => m._id) } });
+    
+    const updatedClass = await Class.findByIdAndUpdate(
       classId,
       {
         academicYear: nextAcademicYear,
-        $unset: { 
-          students: 1,
-          teacher: 1 
-        }
+        $unset: { students: 1, teacher: 1 }
       },
-      { session, new: true }
+      { new: true }
     );
 
-    // 5. Create notifications for students
+    // 5. Create notifications
     const notifications = submittedMarks.map(mark => ({
       user: mark.student,
-      message: `Your marks for ${mark.subject} (${classObj.academicYear}) have been archived`,
+      message: `Your ${mark.subject} marks (${classObj.academicYear}) archived`,
       type: 'marks_archived',
       relatedData: {
         subject: mark.subject,
-        academicYear: classObj.academicYear,
-        class: classObj.name
+        academicYear: classObj.academicYear
       }
     }));
 
-    await Notification.insertMany(notifications, { session });
-
-    await session.commitTransaction();
+    await Notification.insertMany(notifications);
 
     res.status(200).json({
       success: true,
-      message: `Approved and archived ${submittedMarks.length} marks. Class reset for ${nextAcademicYear}`,
+      message: `Archived ${submittedMarks.length} marks`,
       data: {
-        archivedMarksCount: submittedMarks.length,
-        previousAcademicYear: classObj.academicYear,
-        newAcademicYear: nextAcademicYear
+        newAcademicYear: updatedClass.academicYear,
+        archivedCount: submittedMarks.length
       }
     });
 
   } catch (err) {
-    await session.abortTransaction();
+    console.error('Archive error:', err);
     res.status(500).json({ 
       success: false, 
-      message: 'Archive operation failed',
-      error: err.message 
+      message: 'Archive failed',
+      error: process.env.NODE_ENV === 'development' ? err.message : 'Server error'
     });
-  } finally {
-    session.endSession();
   }
 };

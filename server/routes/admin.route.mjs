@@ -4,7 +4,7 @@ import { roleAuth } from '../middleware/auth.middleware.mjs'
 import User from '../models/User.mjs'
 import Class from '../models/Class.mjs'
 import { assignTeacher, getTeachersAndClasses } from '../controllers/admin.controllers.mjs'
-import { getClassesWithPendingMarks } from '../controllers/admin2.controllers.mjs'
+import { approveClassMarksAndArchive, getClassesWithPendingMarks } from '../controllers/admin2.controllers.mjs'
 
 let router = express.Router();
 
@@ -15,8 +15,9 @@ router.post('/assign-teacher', auth, roleAuth(['admin1']), assignTeacher);
 router.get('/get-teacher-classes', auth, roleAuth(['admin1']), getTeachersAndClasses);
 
 router.get('/get-submit-marks', auth, roleAuth(['admin2']), getClassesWithPendingMarks);
+router.put('/approve-class-marks', auth, roleAuth(['admin2']), approveClassMarksAndArchive);
 
-
+  
 
 
 
