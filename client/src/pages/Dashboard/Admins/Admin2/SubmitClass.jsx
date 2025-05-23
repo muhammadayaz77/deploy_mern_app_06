@@ -19,6 +19,8 @@ export default function SubmitClass() {
   const [isDataLoading, setIsDataLoading] = useState(false);
   const [expandedClasses, setExpandedClasses] = useState({});
 
+  console.log(classes[0].pendingMarks[0].student.name)
+
   // Sync with Redux updates
   // useEffect(() => {
   //   if (initData.classes && initData.classes.length > 0) {
@@ -54,7 +56,7 @@ export default function SubmitClass() {
   //   }
   // }, [initData]);
 
-  useGetAllSubmitClass()
+  useGetAllSubmitClass();
 
   // Filter classes by search term
   const filteredClasses = useMemo(() => {
@@ -146,7 +148,7 @@ export default function SubmitClass() {
                       className="bg-green-600 hover:bg-green-700 cursor-pointer"
                       size="sm"
                     >
-                      {loadingStates[classItem.id] ? (
+                      {loadingStates[classItem._id] ? (
                         <>
                           <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                           Approving...
@@ -190,18 +192,18 @@ export default function SubmitClass() {
                       </TableHeader>
                       <TableBody>
                         {classItem.pendingMarks.length > 0 ? (
-                          classItem.pendingMarks.map((student, index) => {
-                            const total = calculateTotal(student)
+                          classItem.pendingMarks.map((stud, index) => {
+                            const total = calculateTotal(stud)
                             return (
-                              <TableRow key={student._id || index}>
+                              <TableRow key={stud._id || index}>
                                 <TableCell className="font-medium">{index + 1}</TableCell>
-                                <TableCell>{student.name}</TableCell>
-                                <TableCell>{student.assignment1 || 0}</TableCell>
-                                <TableCell>{student.assignment2 || 0}</TableCell>
-                                <TableCell>{student.quiz1 || 0}</TableCell>
-                                <TableCell>{student.quiz2 || 0}</TableCell>
-                                <TableCell>{student.mid || 0}</TableCell>
-                                <TableCell>{student.final || 0}</TableCell>
+                                <TableCell>{stud.student?.name}</TableCell>
+                                <TableCell>{stud.assignment1 || 0}</TableCell>
+                                <TableCell>{stud.assignment2 || 0}</TableCell>
+                                <TableCell>{stud.quiz1 || 0}</TableCell>
+                                <TableCell>{stud.quiz2 || 0}</TableCell>
+                                <TableCell>{stud.mid || 0}</TableCell>
+                                <TableCell>{stud.final || 0}</TableCell>
                                 <TableCell className="font-medium">{total}</TableCell>
                               </TableRow>
                             )

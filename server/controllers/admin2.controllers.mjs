@@ -4,7 +4,6 @@ import Class from "../models/Class.mjs";
 import Marks from "../models/Marks.mjs";
 import MarksHistory from "../models/MarksHistory.mjs";
 import Notification from "../models/Notification.mjs";
-import User from '../models/User.mjs'
 import mongoose from "mongoose";
 
 // 1. Get all classes with submitted marks (organized by class)
@@ -91,13 +90,22 @@ export const getClassesWithPendingMarks = async (req, res) => {
 
 export const approveClassMarksAndArchive = async (req, res) => {
   try {
-    const { classId } = req.params;
+    const { classId } = req.body;
     const admin2Id = req.user._id;
-    const currentYear = new Date().getFullYear();
-    const nextAcademicYear = `${currentYear}-${currentYear + 1}`;
 
-    // 1. Verify class exists
-    const classObj = await Class.findById(classId);
+    // Validate classId
+    if (!mongoose.Types.ObjectId.isValid(classId)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid class ID'
+      });
+    }
+
+    // Get class with complete details
+    const classObj = await Class.findById(classId)
+      .select('name gradeLevel section academicYear teacher students')
+      .lean();
+
     if (!classObj) {
       return res.status(404).json({ 
         success: false, 
@@ -105,77 +113,103 @@ export const approveClassMarksAndArchive = async (req, res) => {
       });
     }
 
-    // 2. Get submitted marks
+    // Get all submitted marks
     const submittedMarks = await Marks.find({
       class: classId,
       status: 'submitted'
-    });
+    }).lean();
 
     if (submittedMarks.length === 0) {
       return res.status(400).json({ 
         success: false, 
-        message: 'No submitted marks found' 
+        message: 'No marks to archive' 
       });
     }
 
-    // 3. Create history records
-    const historyRecords = submittedMarks.map(mark => ({
-      originalMark: mark._id,
-      student: mark.student,
-      class: mark.class,
-      subject: mark.subject,
-      assignment1: mark.assignment1,
-      assignment2: mark.assignment2,
-      quiz1: mark.quiz1,
-      quiz2: mark.quiz2,
-      mid: mark.mid,
-      final: mark.final,
-      term: mark.term,
-      academicYear: classObj.academicYear,
-      approvedBy: admin2Id
-    }));
+    // Calculate next academic year
+    const nextAcademicYear = calculateNextAcademicYear(classObj.academicYear);
 
-    // 4. Execute operations sequentially
-    await MarksHistory.insertMany(historyRecords);
-    await Marks.deleteMany({ _id: { $in: submittedMarks.map(m => m._id) } });
-    
-    const updatedClass = await Class.findByIdAndUpdate(
-      classId,
-      {
-        academicYear: nextAcademicYear,
-        $unset: { students: 1, teacher: 1 }
-      },
-      { new: true }
-    );
-
-    // 5. Create notifications
-    const notifications = submittedMarks.map(mark => ({
-      user: mark.student,
-      message: `Your ${mark.subject} marks (${classObj.academicYear}) archived`,
-      type: 'marks_archived',
-      relatedData: {
+    // Prepare marks history records
+    const historyRecords = submittedMarks.map(mark => {
+      const total = calculateTotalMarks(mark);
+      
+      return {
+        originalMark: mark._id,
+        student: mark.student,
+        class: {
+          _id: classObj._id,
+          name: classObj.name,
+          gradeLevel: classObj.gradeLevel,
+          section: classObj.section
+        },
         subject: mark.subject,
-        academicYear: classObj.academicYear
-      }
-    }));
+        ...mark, // Spread all mark fields
+        totalMarks: total,
+        academicYear: classObj.academicYear,
+        approvedBy: admin2Id,
+        status: 'archived'
+      };
+    });
 
-    await Notification.insertMany(notifications);
+    // Execute all operations
+    const [historyResult] = await Promise.all([
+      MarksHistory.insertMany(historyRecords),
+      Marks.deleteMany({ _id: { $in: submittedMarks.map(m => m._id) } }),
+      Class.findByIdAndUpdate(
+        classId,
+        { 
+          academicYear: nextAcademicYear,
+          $unset: { students: "", teacher: "" } 
+        }
+      ),
+      Notification.insertMany(
+        submittedMarks.map(mark => createNotification(mark, classObj)))
+    ]);
 
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
       message: `Archived ${submittedMarks.length} marks`,
       data: {
-        newAcademicYear: updatedClass.academicYear,
-        archivedCount: submittedMarks.length
+        academicYear: classObj.academicYear,
+        archivedCount: historyResult.length,
+        nextAcademicYear
       }
     });
 
   } catch (err) {
-    console.error('Archive error:', err);
-    res.status(500).json({ 
-      success: false, 
-      message: 'Archive failed',
-      error: process.env.NODE_ENV === 'development' ? err.message : 'Server error'
+    console.error('Archive Error:', err);
+    return res.status(500).json({
+      success: false,
+      message: process.env.NODE_ENV === 'development' 
+        ? err.message 
+        : 'Archive failed. Contact admin.'
     });
   }
 };
+
+// Helper functions
+const calculateNextAcademicYear = (currentYear) => {
+  const [start, end] = currentYear.split('-').map(Number);
+  return `${end}-${end + 1}`;
+};
+
+const calculateTotalMarks = (mark) => {
+  return (mark.assignment1 || 0) + 
+         (mark.assignment2 || 0) + 
+         (mark.quiz1 || 0) + 
+         (mark.quiz2 || 0) + 
+         (mark.mid || 0) + 
+         (mark.final || 0);
+};
+
+const createNotification = (mark, classObj) => ({
+  user: mark.student,
+  message: `Your ${mark.subject} marks (${classObj.academicYear}) archived`,
+  type: 'marks_archived',
+  relatedData: {
+    subject: mark.subject,
+    class: classObj.name,
+    year: classObj.academicYear,
+    total: calculateTotalMarks(mark)
+  }
+});
