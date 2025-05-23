@@ -4,6 +4,7 @@ import Class from "../models/Class.mjs";
 import Marks from "../models/Marks.mjs";
 import MarksHistory from "../models/MarksHistory.mjs";
 import Notification from "../models/Notification.mjs";
+import User from '../models/User.mjs'
 
 // 1. Get all classes with submitted marks (organized by class)
 export const getClassesWithPendingMarks = async (req, res) => {
