@@ -69,3 +69,62 @@ export const markNotificationAsRead = async (req, res) => {
     });
   }
 };
+
+
+
+// now
+export const getStudentMarksHistory = async (req, res) => {
+  try {
+    const studentId = req.user._id;
+
+    const marksHistory = await MarksHistory.aggregate([
+      { $match: { student: new mongoose.Types.ObjectId(studentId) } },
+      {
+        $group: {
+          _id: "$academicYear",
+          year: { $first: "$academicYear" },
+          classes: {
+            $push: {
+              classId: "$class._id",
+              className: "$class.name",
+              gradeLevel: "$class.gradeLevel",
+              section: "$class.section",
+              subjects: {
+                $push: {
+                  subject: "$subject",
+                  term: "$term",
+                  assignments: {
+                    asg1: "$assignment1",
+                    asg2: "$assignment2"
+                  },
+                  quizzes: {
+                    quiz1: "$quiz1",
+                    quiz2: "$quiz2"
+                  },
+                  exams: {
+                    mid: "$mid",
+                    final: "$final"
+                  },
+                  total: "$totalMarks",
+                  archivedDate: "$createdAt"
+                }
+              }
+            }
+          }
+        }
+      },
+      { $sort: { year: -1 } } // Newest first
+    ]);
+
+    res.status(200).json({
+      success: true,
+      data: marksHistory
+    });
+
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch history'
+    });
+  }
+};
