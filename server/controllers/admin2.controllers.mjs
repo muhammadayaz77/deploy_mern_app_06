@@ -129,7 +129,7 @@ export const approveClassMarksAndArchive = async (req, res) => {
     // Calculate next academic year
     const nextAcademicYear = calculateNextAcademicYear(classObj.academicYear);
 
-    // Prepare marks history records
+    // Prepare marks history records with complete class details
     const historyRecords = submittedMarks.map(mark => {
       const total = calculateTotalMarks(mark);
       
@@ -143,15 +143,22 @@ export const approveClassMarksAndArchive = async (req, res) => {
           section: classObj.section
         },
         subject: mark.subject,
-        ...mark, // Spread all mark fields
+        term: mark.term,
+        assignment1: mark.assignment1,
+        assignment2: mark.assignment2,
+        quiz1: mark.quiz1,
+        quiz2: mark.quiz2,
+        mid: mark.mid,
+        final: mark.final,
         totalMarks: total,
         academicYear: classObj.academicYear,
         approvedBy: admin2Id,
-        status: 'archived'
+        status: 'archived',
+        createdAt: new Date()
       };
     });
 
-    // Execute all operations
+    // Execute all operations (without notifications)
     const [historyResult] = await Promise.all([
       MarksHistory.insertMany(historyRecords),
       Marks.deleteMany({ _id: { $in: submittedMarks.map(m => m._id) } }),
@@ -161,9 +168,7 @@ export const approveClassMarksAndArchive = async (req, res) => {
           academicYear: nextAcademicYear,
           $unset: { students: "", teacher: "" } 
         }
-      ),
-      Notification.insertMany(
-        submittedMarks.map(mark => createNotification(mark, classObj)))
+      )
     ]);
 
     return res.status(200).json({
@@ -172,7 +177,12 @@ export const approveClassMarksAndArchive = async (req, res) => {
       data: {
         academicYear: classObj.academicYear,
         archivedCount: historyResult.length,
-        nextAcademicYear
+        nextAcademicYear,
+        classDetails: {
+          name: classObj.name,
+          gradeLevel: classObj.gradeLevel,
+          section: classObj.section
+        }
       }
     });
 
@@ -201,15 +211,3 @@ const calculateTotalMarks = (mark) => {
          (mark.mid || 0) + 
          (mark.final || 0);
 };
-
-const createNotification = (mark, classObj) => ({
-  user: mark.student,
-  message: `Your ${mark.subject} marks (${classObj.academicYear}) archived`,
-  type: 'marks_archived',
-  relatedData: {
-    subject: mark.subject,
-    class: classObj.name,
-    year: classObj.academicYear,
-    total: calculateTotalMarks(mark)
-  }
-});

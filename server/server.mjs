@@ -11,6 +11,7 @@ import teacher from './routes/teacher.route.mjs'
 import marks from './routes/marks.route.mjs'
 import admin from './routes/admin.route.mjs'
 import superadmin from './routes/superadmin.route.mjs'
+import student from './routes/student.route.mjs'
 
 
 import User from './models/User.mjs';
@@ -38,7 +39,7 @@ app.use('/api/admin', admin);
 app.use('/api/superadmin', superadmin);
 app.use('/api/teacher',teacher);
 app.use('/api/marks', marks);
-app.use('/api/student', marks);
+app.use('/api/student', student);
 app.use('/ping',async(req,res) => {
   await User.deleteMany({role:'admin1'}).then(r => res.send(r))
   // res.send('pong');
