@@ -16,3 +16,4 @@ export const GET_SUBMIT_CLASSES_API_ENDPOINT='http://localhost:5000/api/admin/ge
 
 export const GET_STUDENT_API_ENDPOINT='http://localhost:5000/api/teacher/class/students'
 export const ADD_MARKS_API_ENDPOINT='http://localhost:5000/api/teacher/marks/bulk'
+export const APPROVE_MARKS_API_ENDPOINT='http://localhost:5000/api/admin/approve-class-marks'

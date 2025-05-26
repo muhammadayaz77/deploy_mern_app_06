@@ -1,65 +1,82 @@
-"use client"
+// SubmitClass.js
+import { useState, useMemo, useEffect } from "react";
+import { Search, Loader2, Check, ChevronDown } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { useSelector, useDispatch } from "react-redux";
+import useGetAllSubmitClass from "../../../../custom-hooks/useGetAllSubmitClass";
+import { cn } from "@/lib/utils";
+import axios from "axios";
+import { APPROVE_MARKS_API_ENDPOINT } from "../../../../utils/constants";
+import { setRemoveApproveStudents } from "../../../../redux/Slices/teacherSlice";
+import { getAllSubmitClass } from "../../../../redux/Slices/adminSlice";
 
-import { useState, useMemo } from "react"
-import { Search, Loader2, Check, ChevronDown } from "lucide-react"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { useSelector } from "react-redux"
-import useGetAllSubmitClass from "../../../../custom-hooks/useGetAllSubmitClass"
-import { cn } from "@/lib/utils"
 
 export default function SubmitClass() {
-  const initData = useSelector((store) => store.admin.submitClass)
-
-  // Mock data structure for multiple classes
-  const [classes, setClasses] = useState(initData);
+  const dispatch = useDispatch();
+  const initData = useSelector((store) => store.admin.submitClass);
+  const [classes, setClasses] = useState(Array.isArray(initData) ? initData : initData?.classes || []);
   const [searchTerm, setSearchTerm] = useState("");
   const [loadingStates, setLoadingStates] = useState({});
   const [isDataLoading, setIsDataLoading] = useState(false);
   const [expandedClasses, setExpandedClasses] = useState({});
 
+
+  useEffect(() => {
+    if (Array.isArray(initData)) {
+      setClasses(initData);
+    } else if (initData?.classes) {
+      setClasses(initData.classes);
+    }
+  }, [initData]);
+
+  // Rest of your component remains the same...
+  const handleApproveButton = async (classId) => {
+    try {
+      setLoadingStates(prev => ({ ...prev, [classId]: true }));
+      
+      const response = await axios.put(
+        APPROVE_MARKS_API_ENDPOINT,
+        { classId },
+        {
+          headers: { "Content-Type": "application/json" },
+          withCredentials: true
+        }
+      );
+
+      // Get the approved student IDs
+      const approvedStudentIds = classes
+        .find(c => c._id === classId)?.pendingMarks
+        .map(stud => stud.student?._id) || [];
+
+      // Update Redux state
+      dispatch(getAllSubmitClass(response.data.updatedSubmitClass));
+      dispatch(setRemoveApproveStudents(approvedStudentIds));
+
+      // Refresh the UI
+      setClasses(prev => prev.filter(c => c._id !== classId));
+
+    } catch (error) {
+      console.log("error : ", error);
+    } finally {
+      setLoadingStates(prev => ({ ...prev, [classId]: false }));
+    }
+  };
+
   // Sync with Redux updates
-  // useEffect(() => {
-  //   if (initData.classes && initData.classes.length > 0) {
-  //     setClasses(initData.classes)
-  //   } else {
-  //     // Mock data for demonstration - replace with your actual data structure
-  //     setClasses([
-  //       {
-  //         id: "class1",
-  //         name: "Mathematics - Grade 10A",
-  //         subject: "Mathematics",
-  //         term: "Fall 2023",
-  //         teacher: "Mr. Johnson",
-  //         students: initData.students?.slice(0, 5) || [],
-  //       },
-  //       {
-  //         id: "class2",
-  //         name: "Physics - Grade 10B",
-  //         subject: "Physics",
-  //         term: "Fall 2023",
-  //         teacher: "Ms. Smith",
-  //         students: initData.students?.slice(5, 10) || [],
-  //       },
-  //       {
-  //         id: "class3",
-  //         name: "Chemistry - Grade 11A",
-  //         subject: "Chemistry",
-  //         term: "Fall 2023",
-  //         teacher: "Dr. Williams",
-  //         students: initData.students?.slice(0, 8) || [],
-  //       },
-  //     ])
-  //   }
-  // }, [initData]);
+  useEffect(() => {
+    if (initData.class && initData.class.length > 0) {
+      setClasses(initData.classes);
+    }
+  }, [initData]);
 
   useGetAllSubmitClass();
 
   // Filter classes by search term
   const filteredClasses = useMemo(() => {
     return classes.filter((classItem) => classItem.name.toLowerCase().includes(searchTerm.toLowerCase()))
-  }, [classes, searchTerm])
+  }, [classes, searchTerm]);
 
   // Calculate total grade for each student
   const calculateTotal = (student) => {
@@ -138,10 +155,7 @@ export default function SubmitClass() {
                   </div>
                   <div className="flex items-center gap-4">
                     <Button
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        onApproveClass(classItem.id)
-                      }}
+                      onClick={() => handleApproveButton(classItem._id)}
                       disabled={loadingStates[classItem.id]}
                       className="bg-green-600 hover:bg-green-700 cursor-pointer"
                       size="sm"
