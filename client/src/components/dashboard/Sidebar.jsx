@@ -12,7 +12,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { GrUserAdmin } from "react-icons/gr";
 import { Home, User, BookOpen, Calendar, Settings, LogOut } from "lucide-react"
 import { LiaUsersCogSolid } from "react-icons/lia";
-import { getAllSubmitClass, setRemoveData } from '../../redux/Slices/adminSlice';
+import { getAllSubmitClass, setAllClasses, setAllTeachers, setRemoveData } from '../../redux/Slices/adminSlice';
 import { setLogout } from '../../redux/Slices/authSlice';
 import { SiGoogleclassroom } from "react-icons/si";
 import { GiUpgrade } from "react-icons/gi";
@@ -38,6 +38,8 @@ function Sidebar({sidebarOpen}) {
         dispatch(setRemoveData());
         dispatch(setLogout());
         dispatch(getAllSubmitClass([]));
+        dispatch(setAllTeachers([]))
+        dispatch(setAllClasses([]))
         navigate("/web/login");
         window.toastify(res.data.message,'success');
       })
