@@ -25,7 +25,8 @@ function useGetAllSubmitClass() {
         });
         
         if (response.data.success) {
-          // dispatch(setAllAdmin(response.data.data))
+          // dispatch(setAllAdmin(response.data.data));
+          console.log("class : ",response.data.data)
           dispatch(getAllSubmitClass(response.data.data));
           // console.log('get submit class res : ',response);
         } else {

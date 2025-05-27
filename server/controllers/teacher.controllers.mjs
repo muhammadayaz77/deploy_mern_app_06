@@ -1,4 +1,5 @@
 
+import Class from "../models/Class.mjs";
 import Marks from "../models/Marks.mjs";
 import User from "../models/User.mjs";
 
@@ -123,22 +124,29 @@ export const saveBulkMarks = async (req, res) => {
 
     const results = [];
     const errors = [];
-    const classId = teacher.class; // Store classId to avoid repeated access
+    const classId = teacher.class;
 
-    // 4. Get all valid student IDs first (single query)
-    const studentIds = students.map(s => s._id);
-    const validStudents = await User.find({
-      _id: { $in: studentIds },
-      role: "student",
-      class: classId
-    });
+    // 4. Get class details once
+    const classDetails = await Class.findById(classId)
+      .select('name gradeLevel section academicYear')
+      .lean();
 
-    const validStudentMap = new Map(validStudents.map(s => [s._id.toString(), s]));
+    if (!classDetails) {
+      return res.status(404).json({
+        message: "Class not found",
+        success: false
+      });
+    }
 
     // 5. Process marks
     for (const studentData of students) {
       try {
-        const student = validStudentMap.get(studentData._id.toString());
+        const student = await User.findOne({
+          _id: studentData._id,
+          role: "student",
+          class: classId
+        });
+
         if (!student) {
           errors.push({
             studentId: studentData._id,
@@ -152,10 +160,15 @@ export const saveBulkMarks = async (req, res) => {
             student: studentData._id,
             subject,
             term,
+            class: classId
           },
           {
             $set: {
               class: classId,
+              className: classDetails.name,
+              gradeLevel: classDetails.gradeLevel,
+              section: classDetails.section,
+              academicYear: classDetails.academicYear,
               assignment1: Math.min(Math.max(studentData.assignment1 || 0, 0), 5),
               assignment2: Math.min(Math.max(studentData.assignment2 || 0, 0), 5),
               quiz1: Math.min(Math.max(studentData.quiz1 || 0, 0), 5),

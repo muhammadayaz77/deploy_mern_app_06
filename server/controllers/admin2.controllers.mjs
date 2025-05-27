@@ -3,82 +3,44 @@
 import Class from "../models/Class.mjs";
 import Marks from "../models/Marks.mjs";
 import MarksHistory from "../models/MarksHistory.mjs";
-import Notification from "../models/Notification.mjs";
 import mongoose from "mongoose";
 
 // 1. Get all classes with submitted marks (organized by class)
 export const getClassesWithPendingMarks = async (req, res) => {
   try {
-
-    // Get classes with pending marks using aggregation
-    const classesWithMarks = await Class.aggregate([
+    // First get all classes
+    const allClasses = await Class.find().lean();
+    
+    // Then get all submitted marks grouped by class
+    const marksByClass = await Marks.aggregate([
+      { $match: { status: "submitted" } },
       {
-        $lookup: {
-          from: 'marks',
-          let: { classId: '$_id' },
-          pipeline: [
-            { 
-              $match: { 
-                $expr: { $eq: ['$class', '$$classId'] },
-                status: 'submitted'
-              }
-            },
-            {
-              $lookup: {
-                from: 'users',
-                localField: 'student',
-                foreignField: '_id',
-                as: 'student'
-              }
-            },
-            { $unwind: '$student' },
-            {
-              $project: {
-                _id: 1,
-                subject: 1,
-                term: 1,
-                assignment1: 1,
-                assignment2: 1,
-                quiz1: 1,
-                quiz2: 1,
-                mid: 1,
-                final: 1,
-                student: {
-                  _id: '$student._id',
-                  name: '$student.name',
-                  gradeLevel: '$student.gradeLevel'
-                },
-                submittedAt: '$createdAt'
-              }
-            }
-          ],
-          as: 'pendingMarks'
-        }
-      },
-      { 
-        $match: { 
-          'pendingMarks.0': { $exists: true } // Only classes with pending marks
-        } 
-      },
-      {
-        $project: {
-          _id: 1,
-          name: 1,
-          gradeLevel: 1,
-          section: 1,
-          pendingMarksCount: { $size: '$pendingMarks' },
-          pendingMarks: 1
+        $group: {
+          _id: "$class",
+          marks: { $push: "$$ROOT" }
         }
       }
     ]);
 
+    // Combine the data
+    const result = allClasses
+      .map(cls => {
+        const classMarks = marksByClass.find(m => m._id.equals(cls._id));
+        return {
+          ...cls,
+          pendingMarks: classMarks?.marks || [],
+          pendingMarksCount: classMarks?.marks.length || 0
+        };
+      })
+      .filter(cls => cls.pendingMarksCount > 0);
+
     res.status(200).json({ 
       success: true, 
-      count : classesWithMarks.length,
-      data: classesWithMarks 
+      count: result.length,
+      data: result 
     });
-
   } catch (err) {
+    console.error("Error:", err);
     res.status(500).json({ 
       success: false, 
       message: 'Server error',
@@ -86,7 +48,6 @@ export const getClassesWithPendingMarks = async (req, res) => {
     });
   }
 };
-
 
 export const approveClassMarksAndArchive = async (req, res) => {
   try {

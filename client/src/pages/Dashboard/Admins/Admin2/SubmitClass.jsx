@@ -22,6 +22,7 @@ export default function SubmitClass() {
   const [isDataLoading, setIsDataLoading] = useState(false);
   const [expandedClasses, setExpandedClasses] = useState({});
 
+  useGetAllSubmitClass();
 
   useEffect(() => {
     if (Array.isArray(initData)) {
@@ -63,15 +64,13 @@ export default function SubmitClass() {
       setLoadingStates(prev => ({ ...prev, [classId]: false }));
     }
   };
-
   // Sync with Redux updates
   useEffect(() => {
-    if (initData.class && initData.class.length > 0) {
+    if (initData?.class && initData.class.length > 0) {
       setClasses(initData.classes);
     }
   }, [initData]);
 
-  useGetAllSubmitClass();
 
   // Filter classes by search term
   const filteredClasses = useMemo(() => {

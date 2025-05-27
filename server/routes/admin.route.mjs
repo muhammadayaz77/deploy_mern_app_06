@@ -1,8 +1,6 @@
 import express from 'express'
 import { auth } from '../middleware/auth.middleware.mjs'
 import { roleAuth } from '../middleware/auth.middleware.mjs'
-import User from '../models/User.mjs'
-import Class from '../models/Class.mjs'
 import { assignTeacher, getTeachersAndClasses } from '../controllers/admin.controllers.mjs'
 import { approveClassMarksAndArchive, getClassesWithPendingMarks } from '../controllers/admin2.controllers.mjs'
 
