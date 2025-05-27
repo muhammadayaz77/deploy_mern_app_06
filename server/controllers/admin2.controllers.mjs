@@ -2,6 +2,7 @@
 
 import Class from "../models/Class.mjs";
 import Marks from "../models/Marks.mjs";
+import User from '../models/User.mjs'
 import MarksHistory from "../models/MarksHistory.mjs";
 import mongoose from "mongoose";
 
@@ -90,7 +91,7 @@ export const approveClassMarksAndArchive = async (req, res) => {
     // Calculate next academic year
     const nextAcademicYear = calculateNextAcademicYear(classObj.academicYear);
 
-    // Prepare marks history records with complete class details
+    // Prepare marks history records
     const historyRecords = submittedMarks.map(mark => {
       const total = calculateTotalMarks(mark);
       
@@ -119,7 +120,7 @@ export const approveClassMarksAndArchive = async (req, res) => {
       };
     });
 
-    // Execute all operations (without notifications)
+    // Execute all operations
     const [historyResult] = await Promise.all([
       MarksHistory.insertMany(historyRecords),
       Marks.deleteMany({ _id: { $in: submittedMarks.map(m => m._id) } }),
@@ -129,12 +130,17 @@ export const approveClassMarksAndArchive = async (req, res) => {
           academicYear: nextAcademicYear,
           $unset: { students: "", teacher: "" } 
         }
+      ),
+      // Remove class reference from teacher
+      User.updateOne(
+        { _id: classObj.teacher },
+        { $unset: { class: "" } }
       )
     ]);
 
     return res.status(200).json({
       success: true,
-      message: `Archived ${submittedMarks.length} marks`,
+      message: `Archived ${submittedMarks.length} marks and removed teacher assignment`,
       data: {
         academicYear: classObj.academicYear,
         archivedCount: historyResult.length,
@@ -158,7 +164,7 @@ export const approveClassMarksAndArchive = async (req, res) => {
   }
 };
 
-// Helper functions
+// Helper functions remain the same
 const calculateNextAcademicYear = (currentYear) => {
   const [start, end] = currentYear.split('-').map(Number);
   return `${end}-${end + 1}`;
