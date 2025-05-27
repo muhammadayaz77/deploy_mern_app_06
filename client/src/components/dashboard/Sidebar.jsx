@@ -17,6 +17,7 @@ import { setLogout } from '../../redux/Slices/authSlice';
 import { SiGoogleclassroom } from "react-icons/si";
 import { GiUpgrade } from "react-icons/gi";
 import { RiStickyNoteAddLine } from "react-icons/ri";
+import { setAllStudents } from '../../redux/Slices/teacherSlice';
 
 
 
@@ -40,6 +41,7 @@ function Sidebar({sidebarOpen}) {
         dispatch(getAllSubmitClass([]));
         dispatch(setAllTeachers([]))
         dispatch(setAllClasses([]))
+        dispatch(setAllStudents([]))
         navigate("/web/login");
         window.toastify(res.data.message,'success');
       })

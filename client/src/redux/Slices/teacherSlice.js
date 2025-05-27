@@ -12,9 +12,6 @@ const teacherSlice = createSlice({
     setAllStudents: (state, action) => {
       state.students = action.payload;
     },
-    setRemoveAllStudents: (state) => {
-      state.students = [];
-    },
     setRemoveApproveStudents: (state, action) => {
       state.students = state.students.filter(item => !action.payload.includes(item._id));
     }
