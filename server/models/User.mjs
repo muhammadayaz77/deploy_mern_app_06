@@ -9,6 +9,14 @@ const userSchema = new mongoose.Schema({
     required: true,
     enum: ['student', 'sup_admin', 'admin1', 'admin2', 'admin3', 'teacher']
   },
+  images : {
+    covid : {
+      type : String,
+    },
+    signature : {
+      type : String,
+    },
+  }, 
   teacherCode: { type: String }, // Only for teachers
   class: { type: mongoose.Schema.Types.ObjectId, ref: 'Class' }, // For students and teachers
   gradeLevel: { 
