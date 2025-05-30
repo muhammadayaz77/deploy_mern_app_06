@@ -7,6 +7,8 @@ import {
   MdEdit,
 } from "react-icons/md";
 import { FaPhoneAlt } from "react-icons/fa";
+import axios from "axios";
+import { toast } from "react-toastify";
 
 // Shadcn
 import {
@@ -16,17 +18,22 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { UPDATE_STUDENT_API_ENDPOINT } from "../../utils/constants";
 
-function ProfileForm({edit}) {
+function ProfileForm({ edit }) {
   const [signature, setSignature] = useState(null);
   const [vaccineCert, setVaccineCert] = useState(null);
   const [isVaccinated, setIsVaccinated] = useState("no");
+  const [loading, setLoading] = useState(false);
   const signatureInputRef = useRef(null);
   const vaccineInputRef = useRef(null);
+  const signatureFileRef = useRef(null);
+  const vaccineFileRef = useRef(null);
 
   const handleSignatureUpload = (e) => {
     const file = e.target.files?.[0];
     if (file && file.type.match("image.*")) {
+      signatureFileRef.current = file; // Store the file object
       const reader = new FileReader();
       reader.onload = (event) => {
         setSignature(event.target.result);
@@ -38,6 +45,7 @@ function ProfileForm({edit}) {
   const handleVaccineUpload = (e) => {
     const file = e.target.files?.[0];
     if (file && file.type.match("image.*")) {
+      vaccineFileRef.current = file; // Store the file object
       const reader = new FileReader();
       reader.onload = (event) => {
         setVaccineCert(event.target.result);
@@ -52,6 +60,39 @@ function ProfileForm({edit}) {
 
   const triggerVaccineInput = () => {
     vaccineInputRef.current?.click();
+  };
+
+  const handleSubmit = async () => {
+    try {
+      setLoading(true);
+      
+      const formData = new FormData();
+      
+      // Append files if they exist
+      if (signatureFileRef.current) {
+        formData.append('signature', signatureFileRef.current);
+      }
+      
+      if (isVaccinated === "yes" && vaccineFileRef.current) {
+        formData.append('covid', vaccineFileRef.current);
+      }
+      console.log("signature",signatureFileRef.current)
+      // Make API call
+      const response = await axios.post(UPDATE_STUDENT_API_ENDPOINT, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+      
+      console.log('Files uploaded successfully:', response.data);
+      toast.success("Files uploaded successfully");
+      
+    } catch (error) {
+      console.error('Error uploading files:', error);
+      // toast.error(error.response?.data?.message || "Failed to upload files");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -215,7 +256,10 @@ function ProfileForm({edit}) {
                 value={isVaccinated}
                 onValueChange={(value) => {
                   setIsVaccinated(value);
-                  if (value === "no") setVaccineCert(null);
+                  if (value === "no") {
+                    setVaccineCert(null);
+                    vaccineFileRef.current = null;
+                  }
                 }}
               >
                 <SelectTrigger className="w-[180px]">
@@ -287,12 +331,19 @@ function ProfileForm({edit}) {
           </div>
         </div>
       </div>
-      <div>
-        {
-          !edit && 
-        <button>submit</button>
-        }
-      </div>
+      {!edit && (
+        <div className="flex justify-end mt-6">
+          <button
+            onClick={handleSubmit}
+            disabled={loading}
+            className={`px-6 py-2 rounded-md text-white ${
+              loading ? 'bg-gray-400' : 'bg-[#991B1E] hover:bg-[#991B1E]/90'
+            } transition`}
+          >
+            {loading ? 'Uploading...' : 'Submit'}
+          </button>
+        </div>
+      )}
     </div>
   );
 }
