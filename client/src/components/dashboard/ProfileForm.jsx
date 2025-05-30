@@ -70,7 +70,7 @@ function ProfileForm({ edit }) {
       
       // Append files if they exist
       if (signatureFileRef.current) {
-        formData.append('signature', signatureFileRef.current);
+        formData.append('signature', signatureFileRef.current[0]);
       }
       
       if (isVaccinated === "yes" && vaccineFileRef.current) {
@@ -81,11 +81,12 @@ function ProfileForm({ edit }) {
       const response = await axios.post(UPDATE_STUDENT_API_ENDPOINT, formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
-        }
+        },
+        withCredentials : true
       });
       
       console.log('Files uploaded successfully:', response.data);
-      toast.success("Files uploaded successfully");
+      // toast.success("Files uploaded successfully");
       
     } catch (error) {
       console.error('Error uploading files:', error);

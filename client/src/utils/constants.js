@@ -19,4 +19,4 @@ export const ADD_MARKS_API_ENDPOINT='http://localhost:5000/api/teacher/marks/bul
 export const APPROVE_MARKS_API_ENDPOINT='http://localhost:5000/api/admin/approve-class-marks'
 
 
-export const UPDATE_STUDENT_API_ENDPOINT='http://localhost:5000/api/student/approve-class-marks/update/profile';
+export const UPDATE_STUDENT_API_ENDPOINT='http://localhost:5000/api/student/update/profile';
