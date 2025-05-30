@@ -17,13 +17,12 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-function ProfileForm() {
+function ProfileForm({edit}) {
   const [signature, setSignature] = useState(null);
   const [vaccineCert, setVaccineCert] = useState(null);
   const [isVaccinated, setIsVaccinated] = useState("no");
   const signatureInputRef = useRef(null);
   const vaccineInputRef = useRef(null);
-  const [edit, setEdit] = useState(false);
 
   const handleSignatureUpload = (e) => {
     const file = e.target.files?.[0];
@@ -287,6 +286,12 @@ function ProfileForm() {
             </div>
           </div>
         </div>
+      </div>
+      <div>
+        {
+          !edit && 
+        <button>submit</button>
+        }
       </div>
     </div>
   );

@@ -11,6 +11,11 @@ import { IoSaveSharp } from "react-icons/io5";
 
 function ProfileInfo() {
   const [isEditingAvatar, setIsEditingAvatar] = useState(false);
+  const [edit, setEdit] = useState(true);
+  const onSubmitEdit = () => {
+    setIsEditingAvatar(!isEditingAvatar);
+    setEdit(!edit);
+  }
   return (
     <div className="shadow-sm">
       <div className="flex flex-col relative items-center lg:items-start lg:flex-row gap-5 primary-bg p-5 pb-8 text-white">
@@ -60,7 +65,7 @@ function ProfileInfo() {
       z-10
       flex items-center justify-center
     "
-    onClick={() => setIsEditingAvatar(!isEditingAvatar)}
+    onClick={onSubmitEdit}
   >
     {isEditingAvatar ? (
       <IoSaveSharp className="h-7 w-7 text-white" />
@@ -71,7 +76,7 @@ function ProfileInfo() {
 </div>
       </div>
       <div className="">
-        <ProfileForm />
+        <ProfileForm edit={edit} />
       </div>
     </div>
   );

@@ -4,9 +4,6 @@ import ProfileInfo from '../../../components/dashboard/ProfileInfo'
 import ProfileNotification from '../../../components/dashboard/ProfileNotification'
 
 function Profile() {
-  const [covidFile, setCovidFile] = useState(null);
-  const [signatureFile, setSignatureFile] = useState(null);
-  const [loading, setLoading] = useState(false);
 
   return (
     <div>
