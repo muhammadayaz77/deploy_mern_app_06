@@ -4,75 +4,42 @@ import mongoose from 'mongoose'
 import User from "../models/User.mjs";
 import cloudinary from "../services/cloudinary.services.mjs";
 import getDataUri from "../services/dataUri.service.mjs";
-import filesUpload from "../middleware/multer.middleware.mjs";
-import multer from "multer";
-// import filesUpload from './uploadMiddleware';
 
 
-// Add Student's Files
-// studentController.js
+// Configure multer storage
+
 export const addStudentFiles = async (req, res) => {
   try {
-    // First wrap the filesUpload in a promise to handle it properly
-    const uploadFiles = (req, res) => {
-      return new Promise((resolve, reject) => {
-        filesUpload(req, res, (err) => {
-          if (err) {
-            reject(err);
-          } else {
-            resolve();
-          }
-        });
-      });
-    };
-
-    // Process the upload
-    await uploadFiles(req, res);
-
-    console.log("Upload processed successfully");
-    console.log("Files received:", req.files);
-
-    // Find user
     const user = await User.findById(req.user._id);
     if (!user) {
-      return res.status(404).json({
-        message: "User not found",
+      return res.status(400).json({
+        message: "User not found!",
         success: false
       });
     }
 
-    // Initialize images object if it doesn't exist
-    if (!user.images) {
-      user.images = {};
-    }
-
-    // Process COVID document if uploaded
-    if (req.files?.covid) {
-      console.log("Processing COVID file");
-      const covidUri = getDataUri(req.files.covid[0]);
-      const covidUpload = await cloudinary.uploader.upload(covidUri.content, {
-        resource_type: 'auto',
-        folder: 'student_documents/covid'
-      });
-      user.images.covid = covidUpload.secure_url;
-    }
-
-    // Process signature if uploaded
+    // Handle signature upload
     if (req.files?.signature) {
-      console.log("Processing signature file");
-      const signatureUri = getDataUri(req.files.signature[0]);
-      const signatureUpload = await cloudinary.uploader.upload(signatureUri.content, {
-        transformation: [
-          { width: 300, height: 100, crop: 'limit' }
-        ],
+      const signatureFile = req.files.signature[0];
+      const signatureUri = getDataUri(signatureFile);
+      const cloudResponse = await cloudinary.uploader.upload(signatureUri.content, {
         folder: 'student_documents/signatures'
       });
-      user.images.signature = signatureUpload.secure_url;
+      user.images.signature = cloudResponse.secure_url;
     }
 
-    // Save user with updated files
-    await user.save();
+    // Handle image upload
+    if (req.files?.signature) {
+      const imageFile = req.files.image[0];
+      const imageUri = getDataUri(imageFile);
+      const cloudResponse = await cloudinary.uploader.upload(imageUri.content, {
+        folder: 'student_documents/images'
+      });
+      user.images.profile = cloudResponse.secure_url;
+    }
 
+    await user.save();
+    
     return res.status(200).json({
       message: "Files uploaded successfully",
       success: true,
@@ -82,7 +49,7 @@ export const addStudentFiles = async (req, res) => {
   } catch (error) {
     console.error("Error in addStudentFiles:", error);
     return res.status(500).json({
-      message: error.message,
+      message: error.message || "Internal server error",
       success: false
     });
   }

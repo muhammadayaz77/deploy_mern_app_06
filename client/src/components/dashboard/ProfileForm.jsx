@@ -29,30 +29,7 @@ function ProfileForm({ edit }) {
   const vaccineInputRef = useRef(null);
   const signatureFileRef = useRef(null);
   const vaccineFileRef = useRef(null);
-
-  const handleSignatureUpload = (e) => {
-    const file = e.target.files?.[0];
-    if (file && file.type.match("image.*")) {
-      signatureFileRef.current = file; // Store the file object
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        setSignature(event.target.result);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
-  const handleVaccineUpload = (e) => {
-    const file = e.target.files?.[0];
-    if (file && file.type.match("image.*")) {
-      vaccineFileRef.current = file; // Store the file object
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        setVaccineCert(event.target.result);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
+  
 
   const triggerSignatureInput = () => {
     signatureInputRef.current?.click();
@@ -202,7 +179,6 @@ function ProfileForm({ edit }) {
                     type="file"
                     ref={signatureInputRef}
                     accept="image/*"
-                    onChange={handleSignatureUpload}
                     className="hidden"
                   />
 
@@ -281,7 +257,6 @@ function ProfileForm({ edit }) {
                   type="file"
                   ref={vaccineInputRef}
                   accept="image/*"
-                  onChange={handleVaccineUpload}
                   className="hidden"
                 />
 
