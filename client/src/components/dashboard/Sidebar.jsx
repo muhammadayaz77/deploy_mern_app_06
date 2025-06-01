@@ -18,6 +18,8 @@ import { SiGoogleclassroom } from "react-icons/si";
 import { GiUpgrade } from "react-icons/gi";
 import { RiStickyNoteAddLine } from "react-icons/ri";
 import { setAllStudents } from '../../redux/Slices/teacherSlice';
+import { BsAward } from "react-icons/bs";
+
 
 
 
@@ -92,6 +94,14 @@ function Sidebar({sidebarOpen}) {
           >
             <User className="h-4 w-4" />
             <span>Profile</span>
+          </Link>
+          <Link
+            to="/student/profile"
+            className="flex items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-accent"
+          >
+
+            <BsAward className="h-4 w-4" />
+            <span>Result</span>
           </Link>
           <Link
             to="#"
