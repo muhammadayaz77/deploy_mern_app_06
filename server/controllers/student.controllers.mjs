@@ -10,33 +10,36 @@ import getDataUri from "../services/dataUri.service.mjs";
 
 export const addStudentFiles = async (req, res) => {
   try {
-    const user = await User.findById(req.user._id);
+    const user = await User.findOne(req.user._id);
     if (!user) {
       return res.status(400).json({
         message: "User not found!",
         success: false
       });
     }
+    console.log("files : ",req.file); 
 
+    console.log(req.file)
     // Handle signature upload
-    if (req.files?.signature) {
-      const signatureFile = req.files.signature[0];
+    if (req.file) {
+      const signatureFile = req.file;
       const signatureUri = getDataUri(signatureFile);
       const cloudResponse = await cloudinary.uploader.upload(signatureUri.content, {
         folder: 'student_documents/signatures'
       });
+      console.log(cloudResponse.secure_url)
       user.images.signature = cloudResponse.secure_url;
     }
 
     // Handle image upload
-    if (req.files?.signature) {
-      const imageFile = req.files.image[0];
-      const imageUri = getDataUri(imageFile);
-      const cloudResponse = await cloudinary.uploader.upload(imageUri.content, {
-        folder: 'student_documents/images'
-      });
-      user.images.profile = cloudResponse.secure_url;
-    }
+    // if (req.files?.image) {
+    //   const imageFile = req.files.image[0];
+    //   const imageUri = getDataUri(imageFile);
+    //   const cloudResponse = await cloudinary.uploader.upload(imageUri.content, {
+    //     folder: 'student_documents/images'
+    //   });
+    //   user.images.profile = cloudResponse.secure_url;
+    // }
 
     await user.save();
     

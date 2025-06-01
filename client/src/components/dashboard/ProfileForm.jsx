@@ -8,7 +8,6 @@ import {
 } from "react-icons/md";
 import { FaPhoneAlt } from "react-icons/fa";
 import axios from "axios";
-import { toast } from "react-toastify";
 
 // Shadcn
 import {
@@ -18,7 +17,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { UPDATE_STUDENT_API_ENDPOINT } from "../../utils/constants";
+import { UPLOAD_STUDENT_API_ENDPOINT } from "../../utils/constants";
 
 function ProfileForm({ edit }) {
   const [signature, setSignature] = useState(null);
@@ -29,7 +28,6 @@ function ProfileForm({ edit }) {
   const vaccineInputRef = useRef(null);
   const signatureFileRef = useRef(null);
   const vaccineFileRef = useRef(null);
-  
 
   const triggerSignatureInput = () => {
     signatureInputRef.current?.click();
@@ -37,6 +35,24 @@ function ProfileForm({ edit }) {
 
   const triggerVaccineInput = () => {
     vaccineInputRef.current?.click();
+  };
+
+  const handleSignatureChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const previewUrl = URL.createObjectURL(file);
+      setSignature(previewUrl);
+      signatureFileRef.current = file;
+    }
+  };
+
+  const handleVaccineChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const previewUrl = URL.createObjectURL(file);
+      setVaccineCert(previewUrl);
+      vaccineFileRef.current = file;
+    }
   };
 
   const handleSubmit = async () => {
@@ -47,27 +63,25 @@ function ProfileForm({ edit }) {
       
       // Append files if they exist
       if (signatureFileRef.current) {
-        formData.append('signature', signatureFileRef.current[0]);
+        formData.append('file', signatureFileRef.current);
       }
       
       if (isVaccinated === "yes" && vaccineFileRef.current) {
         formData.append('covid', vaccineFileRef.current);
       }
-      console.log("signature",signatureFileRef.current)
+
       // Make API call
-      const response = await axios.post(UPDATE_STUDENT_API_ENDPOINT, formData, {
+      const response = await axios.post(UPLOAD_STUDENT_API_ENDPOINT, formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         },
-        withCredentials : true
+        withCredentials: true
       });
       
       console.log('Files uploaded successfully:', response.data);
-      // toast.success("Files uploaded successfully");
       
     } catch (error) {
       console.error('Error uploading files:', error);
-      // toast.error(error.response?.data?.message || "Failed to upload files");
     } finally {
       setLoading(false);
     }
@@ -176,10 +190,11 @@ function ProfileForm({ edit }) {
               ) : (
                 <div className="mt-2">
                   <input
-                    type="file"
-                    ref={signatureInputRef}
-                    accept="image/*"
-                    className="hidden"
+                  type="file"
+                  ref={signatureInputRef}
+                  accept="image/*"
+                  className="hidden"
+                  onChange={handleSignatureChange}
                   />
 
                   {signature ? (
