@@ -1,8 +1,9 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { GET_ALL_ADMIN_API_ENDPOINT } from "../utils/constants";
+import { GET_ALL_ADMIN_API_ENDPOINT, RESULT_STUDENT_API_ENDPOINT } from "../utils/constants";
 import { setAllAdmin } from "../redux/Slices/adminSlice";
 import { useDispatch } from "react-redux";
+import { setResult } from "../redux/Slices/resultSlice";
 
 function useGetResult() {
   const [loading, setLoading] = useState(true);
@@ -16,7 +17,7 @@ function useGetResult() {
     const fetchResult = async () => {
       try {
         setLoading(true);
-        const response = await axios.get(GET_ALL_ADMIN_API_ENDPOINT, {
+        const response = await axios.get(RESULT_STUDENT_API_ENDPOINT, {
           headers: {
             'Content-Type': 'application/json',
           },
@@ -25,8 +26,7 @@ function useGetResult() {
         });
         
         if (response.data.success) {
-          // dispatch(setAllAdmin(response.data.data))
-          console.log('get result res : ',response);
+          dispatch(setResult(response.data.data))
         } else {
           setError(new Error(response.data.message || 'Failed to fetch admins'));
           console.log(response)

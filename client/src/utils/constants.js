@@ -20,3 +20,4 @@ export const APPROVE_MARKS_API_ENDPOINT='http://localhost:5000/api/admin/approve
 
 
 export const UPLOAD_STUDENT_API_ENDPOINT='http://localhost:5000/api/student/upload/files';
+export const RESULT_STUDENT_API_ENDPOINT='http://localhost:5000/api/student/marks/history';
