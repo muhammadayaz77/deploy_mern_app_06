@@ -9,9 +9,6 @@ function ContactUsForm() {
   height="100%"
   className="absolute inset-0"
   title="Islamia College Peshawar Map"
-  marginheight="0"
-  marginwidth="0"
-  scrolling="no"
   src="https://maps.google.com/maps?q=Islamia%20College%20Peshawar&hl=en&z=14&output=embed"
   // style={{ filter: "grayscale(1) contrast(1.2) opacity(0.4)" }}
 ></iframe>

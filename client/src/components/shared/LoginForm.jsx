@@ -25,12 +25,12 @@ function  LoginForm() {
       .then(res => {
         dispatch(setUser(res.data))
         window.toastify(res?.data?.message || 'You are logged in','success')
-        console.log('res : ',res.data.user.role)
+        // console.log('res : ',res.data.user.role)
         if(res.data.user?.role === 'student'){
           navigate('/student/result')
         }
         else if(res.data.user?.role === 'sup_admin'){
-          navigate('/student/result')
+          navigate('/sup-admin/create-admin')
         }
         else if(res.data.user?.role === 'admin1'){
           navigate('/admin/assign-class/')

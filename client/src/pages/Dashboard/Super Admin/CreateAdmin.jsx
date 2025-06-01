@@ -47,7 +47,6 @@
       })
       .catch(err => {
         window.toastify(err.response.data.message,'error')
-        console.log(err)
       })
       .finally(() => {
         setIsLoading(false)

@@ -1,6 +1,6 @@
 import { Route, Routes } from "react-router-dom"
 import Layout from "../../../components/dashboard/layout"
-import ChangePassword from "./Admin2/SubmitClass"
+import ChangePassword from "../ChangePassword"
 import Assign from "./Admin1/Assign"
 import ManageAdmin from "./Admin2/SubmitClass"
 

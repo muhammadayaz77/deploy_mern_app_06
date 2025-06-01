@@ -23,7 +23,7 @@ function Index() {
           <Route path="/student/*" element={<StudentDashboard />} />
         </Route>
         
-        <Route element={<ProtectedRoute allowedRoles={['super_admin']} />}>
+        <Route element={<ProtectedRoute allowedRoles={['sup_admin']} />}>
           <Route path="/sup-admin/*" element={<SuperAdminDashboard />} />
         </Route>
         
