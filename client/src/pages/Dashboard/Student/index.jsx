@@ -6,6 +6,7 @@ import Profile from "./Profile"
 // =====(CSS)====
 import './dashboard.style.css'
 import ChangePassword from "../ChangePassword"
+import Result from "./Result"
 
 
 function Index() {
@@ -16,6 +17,7 @@ function Index() {
       <Route path="/" element={<Layout />}>
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/result" element={<Result />} />
         <Route path="/credentials/change" element={<ChangePassword />} />
         {/* Add more routes as needed */}
       </Route>

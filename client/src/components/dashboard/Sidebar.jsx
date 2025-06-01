@@ -96,7 +96,7 @@ function Sidebar({sidebarOpen}) {
             <span>Profile</span>
           </Link>
           <Link
-            to="/student/profile"
+            to="/student/result"
             className="flex items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-accent"
           >
 
