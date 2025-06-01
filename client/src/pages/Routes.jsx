@@ -17,10 +17,11 @@ function Index() {
         {/* Public routes */}
         <Route path="/web/*" element={<Auth />} />
         <Route path="/unauthorized" element={<UnauthorizedPage />} />
+        <Route path="/unauthorized/*" element={<PageNotFound />} />
         <Route path="/*" element={<Home />} />
         
         {/* Protected routes */}
-        <Route element={<ProtectedRoute    allowedRoles={['student']} />}>
+        <Route element={<ProtectedRoute allowedRoles={['student']} />}>
           <Route path="/student/*" element={<StudentDashboard />} />
         </Route>
         
@@ -35,8 +36,6 @@ function Index() {
         <Route element={<ProtectedRoute allowedRoles={['teacher']} />}>
           <Route path="/teacher/*" element={<TeacherDashboard />} />
         </Route>
-        
-        {/* Catch-all route */}
       </Routes>
     </BrowserRouter>
     </>

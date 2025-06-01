@@ -8,6 +8,7 @@ import Layout from "../../../components/dashboard/layout"
 import ChangePassword from "../ChangePassword"
 import CreateAdmin from "./CreateAdmin"
 import ManageAdmin from "./ManageAdmin"
+import PageNotFound from "../../../components/page-not-found/PageNotFound"
 
 
 function Index() {
@@ -19,7 +20,7 @@ function Index() {
         <Route path="/create-admin/" element={<CreateAdmin />} />
         <Route path="/manage-admin/" element={<ManageAdmin />} />
         <Route path="/credentials/change" element={<ChangePassword />} />
-        {/* Add more routes as needed */}
+        <Route path="/*" element={<PageNotFound />} />
       </Route>
     </Routes>
     </>

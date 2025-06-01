@@ -7,6 +7,7 @@ import Profile from "./Profile"
 import './dashboard.style.css'
 import ChangePassword from "../ChangePassword"
 import Result from "./Result"
+import PageNotFound from "../../../components/page-not-found/PageNotFound"
 
 
 function Index() {
@@ -19,6 +20,7 @@ function Index() {
         <Route path="/profile" element={<Profile />} />
         <Route path="/result" element={<Result />} />
         <Route path="/credentials/change" element={<ChangePassword />} />
+        <Route path="/*" element={<PageNotFound />} />
         {/* Add more routes as needed */}
       </Route>
     </Routes>
