@@ -33,7 +33,7 @@ function  LoginForm() {
           navigate('/student/result')
         }
         else if(res.data.user?.role === 'admin1'){
-          navigate('/ ')
+          navigate('/admin/assign-class/')
         }
         else if(res.data.user?.role === 'admin2'){
           navigate('/admin/get/classes')

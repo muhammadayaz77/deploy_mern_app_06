@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Lock } from 'lucide-react';
 
 const UnauthorizedPage = () => {
@@ -33,7 +33,7 @@ const UnauthorizedPage = () => {
         </div>
         
         <p className="text-sm text-gray-500 mt-6">
-          Need help? Contact support at support@yourschool.com
+          Need help? Contact support at <Link to='/contact-us' className='text-blue-500 underline'>Here</Link>
         </p>
       </div>
     </div>

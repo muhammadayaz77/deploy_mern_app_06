@@ -8,7 +8,6 @@ function ContactUsForm() {
   width="100%"
   height="100%"
   className="absolute inset-0"
-  frameborder="0"
   title="Islamia College Peshawar Map"
   marginheight="0"
   marginwidth="0"
@@ -36,27 +35,27 @@ function ContactUsForm() {
         <p className="leading-relaxed mb-5 text-gray-600">Contact us about anything related to our company or services.
         We'll do our best to get back to you as soon as possible.</p>
         <div className="relative mb-4">
-          <label for="name" className="leading-7 text-sm text-gray-600">Your Name<sup className="text-red-500">*</sup></label>
+          <label htmlFor="name" className="leading-7 text-sm text-gray-600">Your Name<sup className="text-red-500">*</sup></label>
           <input type="text" id="name" name="name" className="w-full bg-white rounded border border-gray-300 focus:border-red-500 focus:ring-2 focus:ring-red-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out" />
         </div>
         <div className="relative mb-4">
-          <label for="phone" className="leading-7 text-sm text-gray-600">Phone Number</label>
+          <label htmlFor="phone" className="leading-7 text-sm text-gray-600">Phone Number</label>
           <input type="text" id="phone" name="phone" className="w-full bg-white rounded border border-gray-300 focus:border-red-500 focus:ring-2 focus:ring-red-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out" />
         </div>
         <div className="relative mb-4">
-          <label for="email" className="leading-7 text-sm text-gray-600">Your Email<sup className="text-red-500">*</sup></label>
+          <label htmlFor="email" className="leading-7 text-sm text-gray-600">Your Email<sup className="text-red-500">*</sup></label>
           <input type="email" id="email" name="email" className="w-full bg-white rounded border border-gray-300 focus:border-red-500 focus:ring-2 focus:ring-red-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out" />
         </div>
         <div className="relative mb-4">
-          <label for="company" className="leading-7 text-sm text-gray-600">Your Company</label>
+          <label htmlFor="company" className="leading-7 text-sm text-gray-600">Your Company</label>
           <input type="text" id="company" name="company" className="w-full bg-white rounded border border-gray-300 focus:border-red-500 focus:ring-2 focus:ring-red-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out" />
         </div>
         <div className="relative mb-4">
-          <label for="subject" className="leading-7 text-sm text-gray-600">Subject<sup className="text-red-500">*</sup></label>
+          <label htmlFor="subject" className="leading-7 text-sm text-gray-600">Subject<sup className="text-red-500">*</sup></label>
           <input type="subject" id="subject" name="subject" className="w-full bg-white rounded border border-gray-300 focus:border-red-500 focus:ring-2 focus:ring-red-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out" />
         </div>
         <div className="relative mb-4">
-          <label for="message" className="leading-7 text-sm text-gray-600">Your Question<sup className="text-red-500">*</sup></label>
+          <label htmlFor="message" className="leading-7 text-sm text-gray-600">Your Question<sup className="text-red-500">*</sup></label>
           <textarea id="message" name="message" className="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 h-32 text-base outline-none text-gray-700 py-1 px-3 resize-none leading-6 transition-colors duration-200 ease-in-out"></textarea>
         </div>
         <button className="text-white border-0 py-2 px-6 focus:outline-none rounded text-lg bg-[#e86262] hover:bg-[#DF4A4A] ">Submit</button>
