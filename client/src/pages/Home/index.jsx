@@ -3,6 +3,7 @@ import { Navigate, Route, Routes } from 'react-router-dom'
 import ContactUs from './ContactUs'
 import Navbar from '../../components/shared/Navbar'
 import Footer from '../../components/shared/Footer'
+import PageNotFound from '../../components/page-not-found/PageNotFound'
 
 function Index() {
   return (
@@ -11,7 +12,7 @@ function Index() {
     <Routes>
       <Route path='/' element={<Navigate to='/web/login' />} />
       <Route path='/contact-us' element={<ContactUs />} />
-      <Route path='/*' element={<div className='mt-20'>Page Not Found</div>} />
+      <Route path="/*" element={<PageNotFound />} />
     </Routes>
     <Footer />
     </>

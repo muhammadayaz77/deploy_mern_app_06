@@ -8,6 +8,7 @@ import AdminDashboard from './Dashboard/Admins/index'
 import TeacherDashboard from './Dashboard/Teacher'
 import ProtectedRoute from '../Protected-Route/ProtectedRoute'
 import UnauthorizedPage from '../components/unauthorized/UnauthorizedPage'
+import PageNotFound from '../components/page-not-found/PageNotFound'
 function Index() {
   return (
     <>
@@ -36,7 +37,6 @@ function Index() {
         </Route>
         
         {/* Catch-all route */}
-        <Route path="/*" element={<>No page found</>} />
       </Routes>
     </BrowserRouter>
     </>
