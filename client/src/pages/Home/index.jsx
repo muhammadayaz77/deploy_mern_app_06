@@ -1,5 +1,5 @@
 import React from 'react'
-import { Route, Routes } from 'react-router-dom'
+import { Navigate, Route, Routes } from 'react-router-dom'
 import ContactUs from './ContactUs'
 import Navbar from '../../components/shared/Navbar'
 import Footer from '../../components/shared/Footer'
@@ -9,6 +9,7 @@ function Index() {
     <>
     <Navbar />
     <Routes>
+      <Route path='/' element={<Navigate to='/web/login' />} />
       <Route path='/contact-us' element={<ContactUs />} />
       <Route path='/*' element={<div className='mt-20'>Page Not Found</div>} />
     </Routes>

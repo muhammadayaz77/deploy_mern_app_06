@@ -8,7 +8,6 @@ const Result = () => {
 
   useGetResult();
   let data = useSelector(store => store.result.result);
-  console.log('data : ',data)
 
   const toggleSession = (year) => {
     setExpandedSessions(prev => ({
@@ -45,7 +44,6 @@ const Result = () => {
                 <ChevronDown className="h-5 w-5 text-gray-500" />
               )}
             </div>
-
             <div 
               className={`transition-all duration-300 ease-in-out overflow-hidden ${expandedSessions[session._id] ? 'max-h-[1000px]' : 'max-h-0'}`}
             >

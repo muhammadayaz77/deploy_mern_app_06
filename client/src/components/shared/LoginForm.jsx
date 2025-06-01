@@ -7,7 +7,7 @@ import { useDispatch } from "react-redux";
 import { setUser } from "../../redux/Slices/authSlice";
 
 
-function LoginForm() {
+function  LoginForm() {
   const dispatch = useDispatch();
   const { register, handleSubmit } = useForm();
   const navigate = useNavigate(null);
@@ -25,7 +25,22 @@ function LoginForm() {
       .then(res => {
         dispatch(setUser(res.data))
         window.toastify(res?.data?.message || 'You are logged in','success')
-        navigate('/student/dashboard')
+        console.log('res : ',res.data.user.role)
+        if(res.data.user?.role === 'student'){
+          navigate('/student/result')
+        }
+        else if(res.data.user?.role === 'sup_admin'){
+          navigate('/student/result')
+        }
+        else if(res.data.user?.role === 'admin1'){
+          navigate('/ ')
+        }
+        else if(res.data.user?.role === 'admin2'){
+          navigate('/admin/get/classes')
+        }
+        else if(res.data.user?.role === 'teacher'){
+          navigate('/teacher/add-marks')
+        }
       })
       .catch(err => {
         console.log(err)
