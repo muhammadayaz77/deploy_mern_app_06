@@ -56,7 +56,7 @@
     return (
       <div className=''>
         <SubNavDashboard />
-        <form onSubmit={handleSubmit(onSubmit)} className='lg:w-[30%] md:w-[60%] mx-10 mt-10'>
+        <form onSubmit={handleSubmit(onSubmit)} className='lg:w-[30%] md:w-[60%] mx-5 sm:mx-10 mt-10'>
           {/* Username Field */}
           <div className="mb-4">
             <label htmlFor="username" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">

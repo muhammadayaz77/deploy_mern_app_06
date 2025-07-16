@@ -140,9 +140,10 @@ export default function SubmitClass() {
         <div className="space-y-4">
           {filteredClasses.length > 0 ? (
             filteredClasses.map((classItem) => (
-              <div key={classItem._id} className="border rounded-md overflow-hidden">
+              
+              <div key={classItem._id} className="border rounded-md overflow-hidden w-full">
                 <div
-                  className="flex justify-between items-center p-4 bg-muted/30 hover:bg-muted/50 cursor-pointer transition-colors duration-200"
+                  className="flex justify-between flex-wrap items-center p-4 bg-muted/30 hover:bg-muted/50 cursor-pointer transition-colors duration-200"
                   onClick={() => toggleClass(classItem.id)}
                 >
                   <div>

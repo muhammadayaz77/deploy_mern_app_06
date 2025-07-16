@@ -67,7 +67,7 @@ const Result = () => {
                           <div className="space-y-3">
                             <div>
                               <h6 className="text-sm font-medium text-gray-600 mb-1">Assignments</h6>
-                              <div className="flex justify-between text-sm">
+                              <div className="flex justify-between flex-wrap text-sm">
                                 <span>ASG 1: {subject.assignments.asg1}</span>
                                 <span>ASG 2: {subject.assignments.asg2}</span>
                               </div>
@@ -75,7 +75,7 @@ const Result = () => {
                             
                             <div>
                               <h6 className="text-sm font-medium text-gray-600 mb-1">Quizzes</h6>
-                              <div className="flex justify-between text-sm">
+                              <div className="flex justify-between flex-wrap text-sm">
                                 <span>Quiz 1: {subject.quizzes.quiz1}</span>
                                 <span>Quiz 2: {subject.quizzes.quiz2}</span>
                               </div>
@@ -83,7 +83,7 @@ const Result = () => {
                             
                             <div>
                               <h6 className="text-sm font-medium text-gray-600 mb-1">Exams</h6>
-                              <div className="flex justify-between text-sm">
+                              <div className="flex justify-between flex-wrap text-sm">
                                 <span>Mid: {subject.exams.mid}</span>
                                 <span>Final: {subject.exams.final}</span>
                               </div>
