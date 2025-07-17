@@ -16,9 +16,6 @@ export const addStudentFiles = async (req, res) => {
         success: false
       });
     }
-    console.log('user before: ',user.id);
-
-    
     // Handle covid certificate upload
     if (req.files?.covid) {
       const covidFile = req.files.covid[0];
@@ -26,7 +23,6 @@ export const addStudentFiles = async (req, res) => {
       const cloudResponse = await cloudinary.uploader.upload(covidUri.content, {
         folder: 'student_documents/covid_certificates'
       });
-      // console.log('covid : ',cloudResponse)
       user.images.covid = cloudResponse.secure_url;
     }
 
@@ -37,11 +33,8 @@ export const addStudentFiles = async (req, res) => {
       const cloudResponse = await cloudinary.uploader.upload(signatureUri.content, {
         folder: 'student_documents/signatures'
       });
-      // console.log('signature : ',cloudResponse)
       user.images.signature = cloudResponse.secure_url;
     }
-
-    console.log('user : ',user)
 
     await user.save();
     

@@ -71,7 +71,7 @@ function ProfileInfo() {
 </div>
       </div>
       <div className="">
-        <ProfileForm edit={edit} />
+        <ProfileForm edit={edit} setEdit={setEdit} />
       </div>
     </div>
   );

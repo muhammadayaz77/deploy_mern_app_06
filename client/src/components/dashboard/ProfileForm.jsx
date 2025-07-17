@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/select";
 import { UPLOAD_STUDENT_API_ENDPOINT } from "../../utils/constants";
 
-function ProfileForm({ edit }) {
+function ProfileForm({ edit,setEdit }) {
   const [signature, setSignature] = useState(null);
   const [vaccineCert, setVaccineCert] = useState(null);
   const [isVaccinated, setIsVaccinated] = useState("no");
@@ -54,37 +54,55 @@ function ProfileForm({ edit }) {
       vaccineFileRef.current = file;
     }
   };
-  
-  const handleSubmit = async () => {
-    try {
-      setLoading(true);
-      console.log('click')
-      console.log('signature : ',signatureFileRef.current,'/n',"covid : ",vaccineFileRef.current);
-      const formData = new FormData();
-      // Append files if they exist
-      if (signatureFileRef.current) {
-        formData.append('signature', signatureFileRef.current);
-      }
-      if (vaccineFileRef.current) {
-        formData.append('covid', vaccineFileRef.current);
-      }
+    
+    const handleSubmit = async () => {
+      try {
+        setLoading(true);
+        const formData = new FormData();
+        // Append files if they exist
+        if (signatureFileRef.current) {
+          formData.append('signature', signatureFileRef.current);
+        }
+        if (vaccineFileRef.current) {
+          formData.append('covid', vaccineFileRef.current);
+        }
+        if(!signatureFileRef.current && !vaccineFileRef.current){
+          window.toastify("Image(s) not found.",'error');
+          return;
+        }
 
-      // Make API call
-      const response = await axios.post(UPLOAD_STUDENT_API_ENDPOINT, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        },
-        withCredentials: true
-      });
-      
-      console.log('Files uploaded successfully:', response.data);
-      
-    } catch (error) {
-      console.error('Error uploading files:', error);
-    } finally {
-      setLoading(false);
+        // Make API call
+        const response = await axios.post(UPLOAD_STUDENT_API_ENDPOINT, formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          },
+          withCredentials: true
+        });
+
+          // Clear inputs and previews after successful upload
+    if (signatureInputRef.current) {
+      signatureInputRef.current.value = ''; // Clear the input
     }
-  };
+    if (vaccineInputRef.current) {
+      vaccineInputRef.current.value = ''; // Clear the input
+    }
+    setEdit(!edit);
+    
+    // Reset state and refs
+    setSignature(null);
+    setVaccineCert(null);
+    signatureFileRef.current = null;
+    vaccineFileRef.current = null;
+
+        window.toastify('Image(s) added','success');
+        console.log('Files uploaded successfully:', response.data);
+        
+      } catch (error) {
+        console.error('Error uploading files:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
   return (
     <div className="mx-6 overflow-hidden">
