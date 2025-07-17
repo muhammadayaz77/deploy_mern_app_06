@@ -4,11 +4,6 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import ProfileForm from "./ProfileForm";
 import { MdEdit } from 'react-icons/md';
 import { IoSaveSharp } from "react-icons/io5";
-
-
-
-
-
 function ProfileInfo() {
   const [isEditingAvatar, setIsEditingAvatar] = useState(false);
   const [edit, setEdit] = useState(true);

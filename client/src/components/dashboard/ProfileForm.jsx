@@ -54,19 +54,18 @@ function ProfileForm({ edit }) {
       vaccineFileRef.current = file;
     }
   };
-
+  
   const handleSubmit = async () => {
     try {
       setLoading(true);
-      
+      console.log('click')
+      console.log('signature : ',signatureFileRef.current,'/n',"covid : ",vaccineFileRef.current);
       const formData = new FormData();
-      
       // Append files if they exist
       if (signatureFileRef.current) {
-        formData.append('file', signatureFileRef.current);
+        formData.append('signature', signatureFileRef.current);
       }
-      
-      if (isVaccinated === "yes" && vaccineFileRef.current) {
+      if (vaccineFileRef.current) {
         formData.append('covid', vaccineFileRef.current);
       }
 
@@ -273,6 +272,7 @@ function ProfileForm({ edit }) {
                   ref={vaccineInputRef}
                   accept="image/*"
                   className="hidden"
+                  onChange={handleVaccineChange}
                 />
 
                 {vaccineCert ? (
