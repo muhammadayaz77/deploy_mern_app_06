@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import ProfileForm from "./ProfileForm";
@@ -7,10 +7,10 @@ import { IoSaveSharp } from "react-icons/io5";
 function ProfileInfo() {
   const [isEditingAvatar, setIsEditingAvatar] = useState(false);
   const [edit, setEdit] = useState(true);
-  const onSubmitEdit = () => {
+  const onSubmitEdit = useCallback(() => {
     setIsEditingAvatar(!isEditingAvatar);
     setEdit(!edit);
-  }
+  });
   return (
     <div className="shadow-sm">
       <div className="flex flex-col relative items-center lg:items-start lg:flex-row gap-5 primary-bg p-5 pb-8 text-white">

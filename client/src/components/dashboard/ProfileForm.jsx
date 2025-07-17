@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/select";
 import { UPLOAD_STUDENT_API_ENDPOINT } from "../../utils/constants";
 
-function ProfileForm({ edit,setEdit }) {
+const ProfileForm = React.memo(({ edit,setEdit }) => {
   const [signature, setSignature] = useState(null);
   const [vaccineCert, setVaccineCert] = useState(null);
   const [isVaccinated, setIsVaccinated] = useState("no");
@@ -28,6 +28,7 @@ function ProfileForm({ edit,setEdit }) {
   const vaccineInputRef = useRef(null);
   const signatureFileRef = useRef(null);
   const vaccineFileRef = useRef(null);
+  console.log('form banging')
 
   const triggerSignatureInput = () => {
     signatureInputRef.current?.click();
@@ -345,7 +346,7 @@ function ProfileForm({ edit,setEdit }) {
           <button
             onClick={handleSubmit}
             disabled={loading}
-            className={`px-6 py-2 rounded-md text-white ${
+            className={`px-6 py-2 rounded-md text-white mb-3 ${
               loading ? 'bg-gray-400' : 'bg-[#991B1E] hover:bg-[#991B1E]/90'
             } transition`}
           >
@@ -355,6 +356,6 @@ function ProfileForm({ edit,setEdit }) {
       )}
     </div>
   );
-}
+})
 
 export default ProfileForm;
