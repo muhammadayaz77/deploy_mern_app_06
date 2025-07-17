@@ -9,16 +9,26 @@ import getDataUri from "../services/dataUri.service.mjs";
 // Configure multer storage
 export const addStudentFiles = async (req, res) => {
   try {
-    const user = await User.findOne(req.user._id);
+    const user = await User.findOne({_id : req.user.id});
     if (!user) {
       return res.status(400).json({
         message: "User not found!",
         success: false
       });
     }
+    console.log('user before: ',user.id);
 
-    console.log("signature : ", req.files.signature); 
-    console.log("covid : ", req.files.covid); 
+    
+    // Handle covid certificate upload
+    if (req.files?.covid) {
+      const covidFile = req.files.covid[0];
+      const covidUri = getDataUri(covidFile);
+      const cloudResponse = await cloudinary.uploader.upload(covidUri.content, {
+        folder: 'student_documents/covid_certificates'
+      });
+      // console.log('covid : ',cloudResponse)
+      user.images.covid = cloudResponse.secure_url;
+    }
 
     // Handle signature upload
     if (req.files?.signature) {
@@ -27,20 +37,11 @@ export const addStudentFiles = async (req, res) => {
       const cloudResponse = await cloudinary.uploader.upload(signatureUri.content, {
         folder: 'student_documents/signatures'
       });
-      console.log('signature : ',cloudResponse)
+      // console.log('signature : ',cloudResponse)
       user.images.signature = cloudResponse.secure_url;
     }
 
-    // Handle covid certificate upload
-    if (req.files?.covid) {
-      const covidFile = req.files.covid[0];
-      const covidUri = getDataUri(covidFile);
-      const cloudResponse = await cloudinary.uploader.upload(covidUri.content, {
-        folder: 'student_documents/covid_certificates'
-      });
-      console.log('covid : ',cloudResponse)
-      user.images.covid = cloudResponse.secure_url;
-    }
+    console.log('user : ',user)
 
     await user.save();
     
