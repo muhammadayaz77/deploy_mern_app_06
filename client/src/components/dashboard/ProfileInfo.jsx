@@ -7,10 +7,12 @@ import { IoSaveSharp } from "react-icons/io5";
 function ProfileInfo() {
   const [isEditingAvatar, setIsEditingAvatar] = useState(false);
   const [edit, setEdit] = useState(true);
-  const onSubmitEdit = useCallback(() => {
+  const onSubmitEdit = () => {
     setIsEditingAvatar(!isEditingAvatar);
     setEdit(!edit);
-  });
+    console.log('clickemnmnmnd')
+  };
+
   return (
     <div className="shadow-sm">
       <div className="flex flex-col relative items-center lg:items-start lg:flex-row gap-5 primary-bg p-5 pb-8 text-white">

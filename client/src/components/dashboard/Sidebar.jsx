@@ -12,14 +12,19 @@ import { useDispatch, useSelector } from 'react-redux';
 import { GrUserAdmin } from "react-icons/gr";
 import { Home, User, BookOpen, Calendar, Settings, LogOut } from "lucide-react"
 import { LiaUsersCogSolid } from "react-icons/lia";
-import { getAllSubmitClass, setAllClasses, setAllTeachers, setRemoveData } from '../../redux/Slices/adminSlice';
-import { setLogout } from '../../redux/Slices/authSlice';
 import { SiGoogleclassroom } from "react-icons/si";
 import { GiUpgrade } from "react-icons/gi";
 import { RiStickyNoteAddLine } from "react-icons/ri";
-import { setAllStudents } from '../../redux/Slices/teacherSlice';
 import { BsAward } from "react-icons/bs";
+import { MdNotificationAdd } from "react-icons/md";
 
+
+// Bussiness Logics imports
+
+
+import { getAllSubmitClass, setAllClasses, setAllTeachers, setRemoveData } from '../../redux/Slices/adminSlice';
+import { setLogout } from '../../redux/Slices/authSlice';
+import { setAllStudents } from '../../redux/Slices/teacherSlice';
 
 
 
@@ -160,6 +165,15 @@ function Sidebar({sidebarOpen}) {
 
             <SiGoogleclassroom className="h-4 w-4" />
             <span>Assign Class</span>
+          </Link>
+
+             <Link
+            to="/admin/send-notification"
+            className="flex items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-accent"
+          >
+
+            <MdNotificationAdd className="h-4 w-4" />
+            <span>Send Notification</span>
           </Link>
           <Link
             to="#"
