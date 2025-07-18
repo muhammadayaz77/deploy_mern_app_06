@@ -1,5 +1,6 @@
 import Class from "../models/Class.mjs";
 import User from "../models/User.mjs";
+import Notification from "../models/Notification.mjs";
 
 
 
@@ -66,3 +67,24 @@ export const getTeachersAndClasses = async (req, res) => {
     });
   }
 };
+
+export const sendNotification = async (req,res) => {
+  try {
+    const {message,image} = req.body;
+
+    const notification = new Notification({
+      message,
+      notificationImage : image || null
+    })
+    await notification.save();
+    res.status(200).json({
+      message : 'Notification has been send to Students',
+      success : true
+    })
+  } catch (error) {
+    res.status(500).json({
+      message : error.message,
+      success : false
+    })
+  }
+}

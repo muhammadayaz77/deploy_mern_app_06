@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 const notificationSchema = new mongoose.Schema({
-  message: { type: String, required: true },
+  message: { type: String },
   notificationImage : {
     type : String,
   },
