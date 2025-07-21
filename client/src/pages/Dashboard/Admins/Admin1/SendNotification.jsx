@@ -1,7 +1,9 @@
 import React, { useState, useRef } from 'react';
+import axios from 'axios'
 
 // react icons
 import { FcRemoveImage } from "react-icons/fc";
+import { SEND_NOTIFICAITON_API_ENDPOINT } from '../../../../utils/constants';
 
 
 const SendNotification = () => {
@@ -27,20 +29,39 @@ const SendNotification = () => {
     setSelectedImages(updatedImages);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     
-    const formData = new FormData();
-    formData.append('message', message);
-    
-    selectedImages.forEach((image, index) => {
-      formData.append(`images[${index}]`, image.file);
-    });
-
-    console.log('Submitting:', { message, images: selectedImages });
-    setMessage('');
-    setSelectedImages([]);
+    try {
+      const formData = new FormData();
+      formData.append('message', JSON.stringify(message));
+      
+      // Send only the first image if multiple are selected
+      if (selectedImages.length > 0) {
+        formData.append('image', selectedImages[0].file);
+      }
+  
+      const response = await axios.post(
+        SEND_NOTIFICAITON_API_ENDPOINT,
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          },
+          withCredentials: true
+        }
+      );
+  
+      console.log(response.data);
+      setMessage('');
+      setSelectedImages([]);
+      // window.toastify(response.data.message, 'success');
+    } catch (err) {
+      console.error(err);
+      // window.toastify(err.response?.data?.message || 'Error sending notification', 'error');
+    }
   };
+  
 
   const triggerFileInput = () => {
     fileInputRef.current.click();

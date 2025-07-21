@@ -3,6 +3,7 @@ import { auth } from '../middleware/auth.middleware.mjs'
 import { roleAuth } from '../middleware/auth.middleware.mjs'
 import { assignTeacher, getTeachersAndClasses, sendNotification } from '../controllers/admin.controllers.mjs'
 import { approveClassMarksAndArchive, getClassesWithPendingMarks } from '../controllers/admin2.controllers.mjs'
+import { singleUpload } from '../middleware/multer.middleware.mjs'
 
 let router = express.Router();
 
@@ -11,7 +12,7 @@ router.post('/assign-teacher', auth, roleAuth(['admin1']), assignTeacher);
 
 // admin1 : Get Teacher and Classes
 router.get('/get-teacher-classes', auth, roleAuth(['admin1']), getTeachersAndClasses);
-router.post('/send-notification',auth,roleAuth(['admin1']),sendNotification);
+router.post('/send-notification',auth,roleAuth(['admin1']),singleUpload,sendNotification);
 
 
 // Admin 2 : 

@@ -2,7 +2,9 @@ import Class from "../models/Class.mjs";
 import User from "../models/User.mjs";
 import Notification from "../models/Notification.mjs";
 
-
+// Cloudinary imports
+import cloudinary from '../services/cloudinary.services.mjs'
+import getDataUri from '../services/dataUri.service.mjs'
 
 
 
@@ -70,13 +72,26 @@ export const getTeachersAndClasses = async (req, res) => {
 
 export const sendNotification = async (req,res) => {
   try {
-    const {message,image} = req.body;
+    const {message} = req.body;
+    const image = req.file;
 
+    console.log('file',image)
+    console.log('message : ',message)
+    
+    
+    if (req.file) {
+    const signatureFile = req.file;
+    const signatureUri = getDataUri(signatureFile);
+    const cloudResponse = await cloudinary.uploader.upload(signatureUri.content, {
+      folder: 'student_documents/notification'
+    });
     const notification = new Notification({
       message,
-      notificationImage : image || null
-    })
+      notificationImage : cloudResponse.secure_url
+    });
     await notification.save();
+  }
+
     res.status(200).json({
       message : 'Notification has been send to Students',
       success : true

@@ -4,7 +4,7 @@ import multer from 'multer';
 const storage = multer.memoryStorage();
 
 // Middleware for single file upload (if you still need it)
-export const singleUpload = multer({ storage }).single('file');
+export const singleUpload = multer({ storage }).single('image');
 
 // Middleware for multiple file uploads
 export const multipleUpload = multer({ 

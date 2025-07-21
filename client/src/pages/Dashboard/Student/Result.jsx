@@ -21,7 +21,7 @@ const Result = () => {
       <h2 className="text-2xl font-bold mb-6 text-gray-800">Academic Performance</h2>
       
       <div className="space-y-4">
-        {data.map((session) => (
+        {data?.map((session) => (
           <div 
             key={session._id} 
             className="border border-gray-200 rounded-lg overflow-hidden shadow-sm transition-all duration-300"
