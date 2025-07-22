@@ -2,7 +2,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-  students: [],
+  notifications: [],
 };
 
 const notificationSlice = createSlice({
@@ -10,13 +10,15 @@ const notificationSlice = createSlice({
   initialState,
   reducers: {
     setAllNotification: (state, action) => {
-      state.notification = action.payload;
+      state.notifications = action.payload;
+      console.log(state.notifications)
     },
-    // setRemoveApproveStudents: (state, action) => {
-    //   state.students = state.students.filter(item => !action.payload.includes(item._id));
-    // }
+    setRemoveNotification: (state, action) => {
+      console.log('slice ',state.notifications)
+      // state.notifications = state.notifications.filter(item => !action.payload.includes(item._id));
+    }
   },
 });
 
-export const { setAllNotification } = notificationSlice.actions;
+export const { setAllNotification,setRemoveNotification } = notificationSlice.actions;
 export default notificationSlice.reducer;

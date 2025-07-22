@@ -2,8 +2,7 @@
 
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { GET_ALL_ADMIN_API_ENDPOINT, GET_NOTIFICAITON_API_ENDPOINT, MANAGE_NOTIFICAITON_API_ENDPOINT } from "../utils/constants";
-import { setAllAdmin } from "../redux/Slices/adminSlice";
+import { GET_NOTIFICAITON_API_ENDPOINT, } from "../utils/constants";
 import { useDispatch } from "react-redux";
 import { setAllNotification } from "../redux/Slices/notificationSlice";
 

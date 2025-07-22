@@ -1,10 +1,13 @@
 import React from 'react';
 import useGetAllNotifications from '../../../../custom-hooks/useGetAllNotifications';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { setRemoveNotification } from '../../../../redux/Slices/notificationSlice';
 
 const NotificationPanel = () => {
   const notifications = useSelector(store => store.notification.notification);
+  const dispatch = useDispatch();
   useGetAllNotifications();
+  // console.log("Notifications manage panel : ",notifications)
 
   // Function to calculate time difference
   const getTimeAgo = (dateString) => {
@@ -31,6 +34,11 @@ const NotificationPanel = () => {
     return 'Just now';
   };
 
+  // Handle Delete Button
+
+  let handleDelete = (id) => {
+    dispatch(setRemoveNotification())
+  }
   return (
     <div className="max-w-3xl mx-auto my-8 bg-gray-50 rounded-xl shadow-md overflow-hidden p-6 font-sans">
       <h2 className="text-2xl font-bold text-gray-800 pb-3 mb-6 border-b border-gray-200">
@@ -46,14 +54,14 @@ const NotificationPanel = () => {
         <ul className="space-y-6">
           {notifications.map(notification => (
             <li 
-              key={notification.id} 
+              key={notification._id} 
               className="group relative bg-white rounded-xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden"
             >
               <div className="flex">
                 {/* Large Image (Left Side) */}
                 <div className="w-2/5 min-h-[200px] overflow-hidden">
                   <img 
-                    src={notification.notificationImage ? notification.notificationImage : '../public/no-image.jpg'} 
+                    src={notification.notificationImage ? notification.notificationImage : '/no-image.jpg'} 
                     alt="Notification" 
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                     onError={(e) => {
@@ -79,7 +87,7 @@ const NotificationPanel = () => {
                 
                 {/* Delete Button - Top Right */}
                 <button 
-                  onClick={() => handleDelete(notification.id)}
+                  onClick={() => handleDelete(notification._id)}
                   className="absolute top-3 right-3 p-2 bg-white rounded-full shadow-md hover:shadow-lg transition-all duration-300 transform hover:scale-110 hover:bg-red-50 group/delete cursor-pointer"
                   aria-label="Delete notification"
                 >

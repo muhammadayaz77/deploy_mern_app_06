@@ -16,7 +16,7 @@ export const ASSIGN_TEACHER_API_ENDPOINT='http://localhost:5000/api/admin/assign
 export const GET_SUBMIT_CLASSES_API_ENDPOINT='http://localhost:5000/api/admin/get-submit-marks'
 export const SEND_NOTIFICAITON_API_ENDPOINT='http://localhost:5000/api/admin/send-notification'
 export const GET_NOTIFICAITON_API_ENDPOINT='http://localhost:5000/api/admin/get-notification'
-export const MANAGE_NOTIFICAITON_API_ENDPOINT='http://localhost:5000/api/admin/manage-notification'
+export const REMOVE_NOTIFICAITON_API_ENDPOINT='http://localhost:5000/api/admin/remove-notification'
 
 
 export const GET_STUDENT_API_ENDPOINT='http://localhost:5000/api/teacher/class/students'
