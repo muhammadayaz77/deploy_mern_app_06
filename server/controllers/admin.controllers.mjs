@@ -103,7 +103,7 @@ export const sendNotification = async (req,res) => {
     })
   }
 }
-export const manageNotification = async (req,res) => {
+export const getNotifications = async (req,res) => {
   try {
    
     let notification = await Notification.find()

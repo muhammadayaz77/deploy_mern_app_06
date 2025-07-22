@@ -52,10 +52,8 @@ const NotificationPanel = () => {
               <div className="flex">
                 {/* Large Image (Left Side) */}
                 <div className="w-2/5 min-h-[200px] overflow-hidden">
-                {
-                  notification.notificationImage && 
                   <img 
-                    src={notification.notificationImage} 
+                    src={notification.notificationImage ? notification.notificationImage : '../public/no-image.jpg'} 
                     alt="Notification" 
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                     onError={(e) => {
@@ -63,7 +61,6 @@ const NotificationPanel = () => {
                       e.target.src = 'https://via.placeholder.com/400x200?text=Image+Not+Found';
                     }}
                   />
-                }
                   
                 </div>
                 

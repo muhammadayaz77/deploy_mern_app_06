@@ -13,8 +13,8 @@ router.post('/assign-teacher', auth, roleAuth(['admin1']), assignTeacher);
 // admin1 : Get Teacher and Classes
 router.get('/get-teacher-classes', auth, roleAuth(['admin1']), getTeachersAndClasses);
 router.post('/send-notification',auth,roleAuth(['admin1']),singleUpload,sendNotification);
-router.get('/manage-notification',auth,roleAuth(['admin1']),manageNotification);
-
+router.get('/get-notification',auth,roleAuth(['admin1']),getNotifications);
+router.get('/get-notification',auth,roleAuth(['admin1']),manageNotification);
 
 // Admin 2 : 
 router.get('/get-submit-marks', auth, roleAuth(['admin2']), getClassesWithPendingMarks);

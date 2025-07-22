@@ -2,7 +2,7 @@
 
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { GET_ALL_ADMIN_API_ENDPOINT, MANAGE_NOTIFICAITON_API_ENDPOINT } from "../utils/constants";
+import { GET_ALL_ADMIN_API_ENDPOINT, GET_NOTIFICAITON_API_ENDPOINT, MANAGE_NOTIFICAITON_API_ENDPOINT } from "../utils/constants";
 import { setAllAdmin } from "../redux/Slices/adminSlice";
 import { useDispatch } from "react-redux";
 import { setAllNotification } from "../redux/Slices/notificationSlice";
@@ -19,7 +19,7 @@ function useGetAllNotifications() {
     const fetchNotifications = async () => {
       try {
         setLoading(true);
-        const response = await axios.get(MANAGE_NOTIFICAITON_API_ENDPOINT, {
+        const response = await axios.get(GET_NOTIFICAITON_API_ENDPOINT, {
           headers: {
             'Content-Type': 'application/json',
           },
