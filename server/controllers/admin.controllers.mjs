@@ -103,6 +103,30 @@ export const sendNotification = async (req,res) => {
     })
   }
 }
+export const removeNotification = async (req, res) => {
+  try {
+    // Find the notification by ID and delete it
+    const notification = await Notification.findByIdAndDelete(req.params.notificationId);
+
+    if (!notification) {
+      return res.status(404).json({
+        message: "Notification not found",
+        success: false,
+      });
+    }
+
+    res.status(200).json({
+      message: "Notification deleted successfully",
+      data: notification, // Return the deleted notification
+      success: true,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+      success: false,
+    });
+  }
+};
 export const getNotifications = async (req,res) => {
   try {
    

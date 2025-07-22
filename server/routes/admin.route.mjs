@@ -1,7 +1,7 @@
 import express from 'express'
 import { auth } from '../middleware/auth.middleware.mjs'
 import { roleAuth } from '../middleware/auth.middleware.mjs'
-import { assignTeacher, getTeachersAndClasses, manageNotification, sendNotification } from '../controllers/admin.controllers.mjs'
+import { assignTeacher, getNotifications, getTeachersAndClasses, removeNotification, sendNotification } from '../controllers/admin.controllers.mjs'
 import { approveClassMarksAndArchive, getClassesWithPendingMarks } from '../controllers/admin2.controllers.mjs'
 import { singleUpload } from '../middleware/multer.middleware.mjs'
 
@@ -13,8 +13,9 @@ router.post('/assign-teacher', auth, roleAuth(['admin1']), assignTeacher);
 // admin1 : Get Teacher and Classes
 router.get('/get-teacher-classes', auth, roleAuth(['admin1']), getTeachersAndClasses);
 router.post('/send-notification',auth,roleAuth(['admin1']),singleUpload,sendNotification);
-router.get('/get-notification',auth,roleAuth(['admin1']),getNotifications);
-router.get('/get-notification',auth,roleAuth(['admin1']),manageNotification);
+router.get('/get-notification',auth,roleAuth(['admin1']),getNotifications
+);
+router.post('/remove-notification/:notificationId',auth,roleAuth(['admin1']),removeNotification);
 
 // Admin 2 : 
 router.get('/get-submit-marks', auth, roleAuth(['admin2']), getClassesWithPendingMarks);
