@@ -1,14 +1,12 @@
 import React, { useState, useRef } from 'react';
-import axios from 'axios'
-
-// react icons
+import axios from 'axios';
 import { FcRemoveImage } from "react-icons/fc";
 import { SEND_NOTIFICAITON_API_ENDPOINT } from '../../../../utils/constants';
-
 
 const SendNotification = () => {
   const [message, setMessage] = useState('');
   const [selectedImages, setSelectedImages] = useState([]);
+  const [loading, setLoading] = useState(false);
   const fileInputRef = useRef(null);
 
   const handleImageChange = (e) => {
@@ -31,12 +29,13 @@ const SendNotification = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (loading) return;
     
+    setLoading(true);
     try {
       const formData = new FormData();
       formData.append('message', JSON.stringify(message));
       
-      // Send only the first image if multiple are selected
       if (selectedImages.length > 0) {
         formData.append('image', selectedImages[0].file);
       }
@@ -59,9 +58,10 @@ const SendNotification = () => {
     } catch (err) {
       console.error(err);
       // window.toastify(err.response?.data?.message || 'Error sending notification', 'error');
+    } finally {
+      setLoading(false);
     }
   };
-  
 
   const triggerFileInput = () => {
     fileInputRef.current.click();
@@ -83,6 +83,7 @@ const SendNotification = () => {
             rows={4}
             className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500"
             required
+            disabled={loading}
           />
         </div>
 
@@ -95,11 +96,13 @@ const SendNotification = () => {
             accept="image/*"
             multiple
             className="hidden"
+            disabled={loading}
           />
           <button
             type="button"
             onClick={triggerFileInput}
-            className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+            className={`px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
+            disabled={loading}
           >
             Add Images
           </button>
@@ -116,9 +119,10 @@ const SendNotification = () => {
                 />
                 <button
                   type="button"
-                  className="absolute top-1 right-1 bg-white rounded-full p-1 shadow-md hover:bg-gray-100 focus:outline-none"
-                  onClick={() => handleRemoveImage(index)}
+                  className={`absolute top-1 right-1 bg-white rounded-full p-1 shadow-md hover:bg-gray-100 focus:outline-none cursor-pointer ${loading ? 'cursor-not-allowed' : ''}`}
+                  onClick={() => !loading && handleRemoveImage(index)}
                   title="Remove image"
+                  disabled={loading}
                 >
                   <FcRemoveImage />
                 </button>
@@ -129,11 +133,43 @@ const SendNotification = () => {
 
         <button 
           type="submit" 
-          className="w-full px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+          className={`w-full px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 relative overflow-hidden cursor-pointer ${
+            loading ? 'cursor-wait' : ''
+          }`}
+          disabled={loading}
         >
-          Send Notification
+          <span className={`flex items-center justify-center transition-all duration-300 ${
+            loading ? 'opacity-0' : 'opacity-100'
+          }`}>
+            Send Notification
+          </span>
+          
+          {loading && (
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="loader">
+                <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+              </div>
+            </div>
+          )}
         </button>
       </form>
+
+      <style jsx>{`
+        .loader {
+          animation: pulse 1.5s infinite ease-in-out;
+        }
+        @keyframes pulse {
+          0%, 100% {
+            opacity: 1;
+          }
+          50% {
+            opacity: 0.5;
+          }
+        }
+      `}</style>
     </div>
   );
 };
