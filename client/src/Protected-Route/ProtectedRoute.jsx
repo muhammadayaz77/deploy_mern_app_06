@@ -8,7 +8,7 @@ const ProtectedRoute = ({ allowedRoles }) => {
 
 
   if (loading) {
-    return <h1>Loading...</h1>; // Or your loading spinner
+    return <h1>Loading...</h1>; // Or loading spinner
   }
 
   if (!currentUser) {

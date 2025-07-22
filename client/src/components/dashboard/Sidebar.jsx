@@ -16,7 +16,9 @@ import { SiGoogleclassroom } from "react-icons/si";
 import { GiUpgrade } from "react-icons/gi";
 import { RiStickyNoteAddLine } from "react-icons/ri";
 import { BsAward } from "react-icons/bs";
-import { MdNotificationAdd } from "react-icons/md";
+import { MdOutlineNotificationAdd } from "react-icons/md";
+import { MdOutlineEditNotifications } from "react-icons/md";
+
 
 
 // Bussiness Logics imports
@@ -172,8 +174,17 @@ function Sidebar({sidebarOpen}) {
             className="flex items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-accent"
           >
 
-            <MdNotificationAdd className="h-4 w-4" />
+            <MdOutlineNotificationAdd className="h-4 w-4" />
             <span>Send Notification</span>
+          </Link>
+             <Link
+            to="/admin/manage-notification"
+            className="flex items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-accent"
+          >
+            
+
+            <MdOutlineEditNotifications className="h-4 w-4" />
+            <span>Manage Notifications</span>
           </Link>
           <Link
             to="#"

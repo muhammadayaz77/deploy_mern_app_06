@@ -109,7 +109,7 @@ export const manageNotification = async (req,res) => {
     let notification = await Notification.find()
 
     res.status(200).json({
-      message : notification,
+      data : notification,
       success : true
     })
   } catch (error) {
