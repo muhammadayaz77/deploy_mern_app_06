@@ -193,3 +193,20 @@ export const getStudentMarksHistory = async (req, res) => {
     });
   }
 };
+
+export const getStudentNotification = async (req,res) => {
+  try {
+   
+    let notification = await Notification.find()
+
+    res.status(200).json({
+      data : notification,
+      success : true
+    })
+  } catch (error) {
+    res.status(500).json({
+      message : error.message,
+      success : false
+    })
+  }
+}
