@@ -76,7 +76,14 @@ export const sendNotification = async (req,res) => {
     const image = req.file;
 
     console.log('file',image)
-    console.log('message : ',message)
+    console.log('message : ',message);
+
+    if(!req.file){
+      const notification = new Notification({
+        message
+      })
+      notification.save()
+    }
     
     
     if (req.file) {
