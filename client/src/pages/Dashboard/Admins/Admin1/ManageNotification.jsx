@@ -2,6 +2,8 @@ import React from 'react';
 import useGetAllNotifications from '../../../../custom-hooks/useGetAllNotifications';
 import { useDispatch, useSelector } from 'react-redux';
 import { setRemoveNotification } from '../../../../redux/Slices/notificationSlice';
+import axios from 'axios';
+import { REMOVE_NOTIFICAITON_API_ENDPOINT } from '../../../../utils/constants';
 
 const NotificationPanel = () => {
   const notifications = useSelector(store => store.notification.notifications);
@@ -36,10 +38,19 @@ const NotificationPanel = () => {
 
   // Handle Delete Button
 
-  let handleDelete = (id) => {
+  let handleDelete = async (id) => {
     console.log('hi')
-    dispatch(setRemoveNotification(id));
     // dispatch(setRemoveNotificationPanel(id));
+    await axios.post(`${REMOVE_NOTIFICAITON_API_ENDPOINT}/${id}`,{},{
+      withCredentials : true
+    })
+    .then(res => {
+      window.toastify(res.data.message,'success')
+      dispatch(setRemoveNotification(id));
+    })
+    .catch(err => {
+      window.toastify(err.response.data.message || 'Internal server error','error')
+    })
   }
   return (
     <div className="max-w-3xl mx-auto my-8 bg-gray-50 rounded-xl shadow-md overflow-hidden p-6 font-sans">

@@ -2,12 +2,14 @@ import React, { useState, useRef } from 'react';
 import axios from 'axios';
 import { FcRemoveImage } from "react-icons/fc";
 import { SEND_NOTIFICAITON_API_ENDPOINT } from '../../../../utils/constants';
+import {useNavigate} from 'react-router-dom'
 
 const SendNotification = () => {
   const [message, setMessage] = useState('');
   const [selectedImages, setSelectedImages] = useState([]);
   const [loading, setLoading] = useState(false);
   const fileInputRef = useRef(null);
+  const navigate = useNavigate();
 
   const handleImageChange = (e) => {
     const files = Array.from(e.target.files);
@@ -50,14 +52,14 @@ const SendNotification = () => {
           withCredentials: true
         }
       );
-  
-      console.log(response.data);
+      window.toastify(response.data.message,'success')
+      navigate('/admin/manage-notification')
       setMessage('');
       setSelectedImages([]);
       // window.toastify(response.data.message, 'success');
     } catch (err) {
       console.error(err);
-      // window.toastify(err.response?.data?.message || 'Error sending notification', 'error');
+      window.toastify(err.response?.data?.message || 'Error sending notification', 'error');
     } finally {
       setLoading(false);
     }
