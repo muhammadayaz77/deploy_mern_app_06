@@ -8,6 +8,7 @@ import './dashboard.style.css'
 import ChangePassword from "../ChangePassword"
 import Result from "./Result"
 import PageNotFound from "../../../components/page-not-found/PageNotFound"
+import Notifications from "./Notifications"
 
 
 function Index() {
@@ -19,6 +20,7 @@ function Index() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/result" element={<Result />} />
+        <Route path="/notifications" element={<Notifications />} />
         <Route path="/credentials/change" element={<ChangePassword />} />
         <Route path="/*" element={<PageNotFound />} />
         {/* Add more routes as needed */}

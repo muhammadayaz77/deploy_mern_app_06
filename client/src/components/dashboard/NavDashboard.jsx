@@ -83,7 +83,7 @@ function NavDashboard({ toggleSidebar, sidebarOpen }) {
         <h1 className="sm:text-lg sm:font-semibold text-xs">
           {
             user?.role === 'student' ? 'Student ' : user?.role === 'sup_admin' ? "Super Admin " :
-            user?.role === 'admin1' ? "Admin no. 1" :  user?.role === 'admin2' ? "Admin no. 2 " : user?.role === 'teacher' ? "Teacher " : ''
+            user?.role === 'admin1' ? "Admin no. 1 " :  user?.role === 'admin2' ? "Admin no. 2 " : user?.role === 'teacher' ? "Teacher " : ''
           } 
           Dashboard</h1>
       </div>
