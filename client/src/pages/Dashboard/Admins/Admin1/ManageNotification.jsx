@@ -4,10 +4,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setRemoveNotification } from '../../../../redux/Slices/notificationSlice';
 
 const NotificationPanel = () => {
-  const notifications = useSelector(store => store.notification.notification);
+  const notifications = useSelector(store => store.notification.notifications);
   const dispatch = useDispatch();
   useGetAllNotifications();
-  // console.log("Notifications manage panel : ",notifications)
+  console.log("Notifications manage panel : ",notifications)
 
   // Function to calculate time difference
   const getTimeAgo = (dateString) => {
@@ -37,7 +37,9 @@ const NotificationPanel = () => {
   // Handle Delete Button
 
   let handleDelete = (id) => {
-    dispatch(setRemoveNotification())
+    console.log('hi')
+    dispatch(setRemoveNotification(id));
+    // dispatch(setRemoveNotificationPanel(id));
   }
   return (
     <div className="max-w-3xl mx-auto my-8 bg-gray-50 rounded-xl shadow-md overflow-hidden p-6 font-sans">
