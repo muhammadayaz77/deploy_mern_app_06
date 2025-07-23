@@ -56,6 +56,7 @@ const NotificationPanel = () => {
     <div className="max-w-3xl mx-auto my-8 bg-gray-50 rounded-xl shadow-md overflow-hidden p-6 font-sans">
       <h2 className="text-2xl font-bold text-gray-800 pb-3 mb-6 border-b border-gray-200">
         Admin Notifications
+        <span className='block text-sm font-light'>You can manage notifications</span>
       </h2>
       
       {!notifications || notifications.length === 0 ? (
@@ -65,7 +66,7 @@ const NotificationPanel = () => {
         </div>
       ) : (
         <ul className="space-y-6">
-          {notifications.map(notification => (
+          {notifications.slice().reverse().map(notification => (
             <li 
               key={notification._id} 
               className="group relative bg-white rounded-xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden"
@@ -91,7 +92,7 @@ const NotificationPanel = () => {
                   <div className="flex-grow"></div>
                   
                   <div className="mt-auto">
-                    <p className="text-gray-800 text-lg font-medium mb-2">{notification.message}</p>
+                    <p className="text-gray-800 text-lg font-medium mb-2">{notification.message == '' ? '' : notification.message}</p>
                     <span className="text-sm text-gray-500">
                       {getTimeAgo(notification.createdAt)}
                     </span>

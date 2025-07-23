@@ -33,10 +33,20 @@ const SendNotification = () => {
     e.preventDefault();
     if (loading) return;
     
+    // Client-side validation
+    if (!message.trim() && selectedImages.length === 0) {
+      window.toastify('Notification must contain either text or an image', 'error');
+      return;
+    }
+  
     setLoading(true);
     try {
       const formData = new FormData();
-      formData.append('message', JSON.stringify(message));
+      
+      // Only append message if it's not empty
+      if (message.trim()) {
+        formData.append('message', message.trim());
+      }
       
       if (selectedImages.length > 0) {
         formData.append('image', selectedImages[0].file);
@@ -52,11 +62,11 @@ const SendNotification = () => {
           withCredentials: true
         }
       );
-      window.toastify(response.data.message,'success')
-      navigate('/admin/manage-notification')
+      
+      window.toastify(response.data.message, 'success');
+      navigate('/admin/manage-notification');
       setMessage('');
       setSelectedImages([]);
-      // window.toastify(response.data.message, 'success');
     } catch (err) {
       console.error(err);
       window.toastify(err.response?.data?.message || 'Error sending notification', 'error');
@@ -72,7 +82,7 @@ const SendNotification = () => {
   return (
     <div className="max-w-md mx-auto p-5 border border-gray-200 rounded-lg bg-gray-50 shadow-sm mt-10">
       <h2 className="text-xl font-semibold mb-4 text-gray-800">Send Notification</h2>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} noValidate>
         <div className="mb-4">
           <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-1">
             Message:

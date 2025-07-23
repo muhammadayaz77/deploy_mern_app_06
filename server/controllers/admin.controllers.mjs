@@ -70,46 +70,58 @@ export const getTeachersAndClasses = async (req, res) => {
   }
 };
 
-export const sendNotification = async (req,res) => {
+export const sendNotification = async (req, res) => {
   try {
-    const {message} = req.body;
+    const { message } = req.body;
     const image = req.file;
 
-    console.log('file',image)
-    console.log('message : ',message);
-
-    if(!req.file){
-      const notification = new Notification({
-        message
-      })
-      notification.save()
+    // Check if both message and image are empty
+    if ((!message || message.trim() === "") && !image) {
+      return res.status(400).json({
+        message: 'Notification must contain either text or an image',
+        success: false
+      });
     }
-    
-    
-    if (req.file) {
-    const signatureFile = req.file;
-    const signatureUri = getDataUri(signatureFile);
-    const cloudResponse = await cloudinary.uploader.upload(signatureUri.content, {
-      folder: 'student_documents/notification'
-    });
-    const notification = new Notification({
-      message,
-      notificationImage : cloudResponse.secure_url
-    });
-    await notification.save();
-  }
 
-    res.status(200).json({
-      message : 'Notification has been send to Students',
-      success : true
-    })
+    // Handle case with only message (no image)
+    if (!image && message && message.trim() !== "") {
+      const notification = new Notification({
+        message: message.trim()
+      });
+      await notification.save();
+      return res.status(200).json({
+        message: 'Notification has been sent to Students',
+        success: true
+      });
+    }
+
+    // Handle case with both message and image
+    if (image) {
+      const signatureUri = getDataUri(image);
+      const cloudResponse = await cloudinary.uploader.upload(signatureUri.content, {
+        folder: 'student_documents/notification'
+      });
+      
+      const notification = new Notification({
+        message: message ? message.trim() : undefined, // Only include message if not empty
+        notificationImage: cloudResponse.secure_url
+      });
+      
+      await notification.save();
+      return res.status(200).json({
+        message: 'Notification has been sent to Students',
+        success: true
+      });
+    }
+
   } catch (error) {
     res.status(500).json({
-      message : error.message,
-      success : false
-    })
+      message: error.message,
+      success: false
+    });
   }
-}
+};
+
 export const removeNotification = async (req, res) => {
   try {
     // Find the notification by ID and delete it
