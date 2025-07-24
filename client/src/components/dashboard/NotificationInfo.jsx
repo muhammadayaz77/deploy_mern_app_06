@@ -126,7 +126,7 @@ export default function NotificationInfo() {
               >
                 <div className="p-2 h-full overflow-y-auto">
                   {notifications && notifications.length > 0 ? (
-                    notifications.map((notification, index) => (
+                    notifications.slice().reverse().map((notification, index) => (
                       <div
                         key={notification._id}
                         className={`flex items-start gap-3 p-3 rounded-lg hover:bg-blue-50 cursor-pointer transition-all duration-300 transform hover:scale-[1.02] border-b border-gray-100 last:border-b-0 ${
@@ -138,7 +138,7 @@ export default function NotificationInfo() {
                       >
                         <div className="flex-shrink-0">
                           <img
-                            src={notification.notificationImage || "/placeholder.svg"}
+                            src={notification.notificationImage || "/no-image.jpg"}
                             alt="notification"
                             className="w-16 h-16 rounded-lg object-cover border-2 border-gray-200 transition-transform duration-300 hover:scale-110"
                           />
