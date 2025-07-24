@@ -52,7 +52,7 @@ const NotificationPanel = () => {
         </div>
       ) : (
         <ul className="space-y-6">
-          {notifications.map(notification => (
+          {notifications.slice().reverse().map(notification => (
             <li 
               key={notification._id}
               className="bg-white rounded-xl shadow-sm transition-all duration-300 overflow-hidden
