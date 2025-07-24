@@ -22,6 +22,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setLogout } from "../../redux/Slices/authSlice";
 import { setAllStudents, setRemoveAllStudents } from "../../redux/Slices/teacherSlice";
 import { getAllSubmitClass } from "../../redux/Slices/adminSlice";
+import NotificationInfo from "./NotificationInfo";
 
 function NavDashboard({ toggleSidebar, sidebarOpen }) {
   const navigate = useNavigate();
@@ -88,8 +89,11 @@ function NavDashboard({ toggleSidebar, sidebarOpen }) {
           Dashboard</h1>
       </div>
       <div className="flex items-center gap-5 mr-5">
-        <FaBell className="text-white border-white h-5 w-5" />
-
+        {/* <FaBell className="text-white border-white h-5 w-5" /> */}
+        {
+          user.role == 'student' ? 
+          <NotificationInfo /> : null
+        }
         <DropdownMenu>
           <DropdownMenuTrigger className="focus:border-none">
             <Avatar className="cursor-pointer h-10 w-10">
